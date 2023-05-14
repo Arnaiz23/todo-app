@@ -1,15 +1,19 @@
 import { Router } from "express"
-import { pool } from "../database.js"
+import { getAllTodos } from "../controllers/controllers.js"
 
 const router = Router()
 
 router.get("/", (req, res) => {
-	res.send("Hello World!!")
+	const routes = {
+		"/todos": "Get all the TODOS",
+	}
+
+	return res.json(routes)
 })
 
-router.get("/test", async (req, res) => {
-	const query = await pool.query(`SELECT * FROM todos`)
-	res.json(query)
+router.get("/todos", async (req, res) => {
+	const rows = await getAllTodos()
+	return res.json(rows)
 })
 
 export { router }

@@ -1,6 +1,6 @@
 import { createPool } from "mysql2"
-
-console.log(process.env.MYSQL_USER)
+import dotenv from "dotenv"
+dotenv.config()
 
 const pool = createPool({
 	host: process.env.MYSQL_HOST,
@@ -9,4 +9,15 @@ const pool = createPool({
 	database: process.env.MYSQL_DATABASE,
 }).promise()
 
-export { pool }
+async function getConnection() {
+	try {
+		const connection = await pool.getConnection()
+		console.log("Connected to MySQL")
+		return connection
+	} catch (err) {
+		console.log("Error connection")
+		console.log(err)
+	}
+}
+
+export { getConnection }

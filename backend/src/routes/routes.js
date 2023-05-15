@@ -3,7 +3,8 @@ import {
   deleteTodoWithId,
   getAllTodos,
   newTodo,
-} from "../controllers/controllers.js"
+  updateTitleTodo,
+} from "../services/services.js"
 
 const router = Router()
 
@@ -51,9 +52,30 @@ router.post("/todos", async (req, res) => {
 router.delete("/todos/:id", async (req, res) => {
   const { id } = req.params
 
-  const { data } = await deleteTodoWithId({ id })
+  const { data, err } = await deleteTodoWithId({ id })
+
+  if (err) {
+    return res.status(404).json({
+      Error: "Error with the DELETE query of the todos table",
+    })
+  }
 
   return res.status(200).json({ data })
+})
+
+router.put("/todos/:id", async (req, res) => {
+  const { id } = req.params
+  const { title } = req.body
+
+  const { row, err } = await updateTitleTodo({ id, title })
+
+  if (err) {
+    return res.status(404).json({
+      Error: "Error with the UPDATE title query of the todos table",
+    })
+  }
+
+  return res.status(200).json(row)
 })
 
 export { router }

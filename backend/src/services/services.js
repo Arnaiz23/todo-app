@@ -21,7 +21,7 @@ async function newTodo({ title }) {
     ])
 
     const newId = result.insertId
-    const { row } = await getTodoWithId(newId)
+    const { row } = await getTodoWithId({ id: newId })
     return { row }
   } catch (err) {
     console.log("Insert todo " + err)
@@ -29,7 +29,7 @@ async function newTodo({ title }) {
   }
 }
 
-async function getTodoWithId(id) {
+async function getTodoWithId({ id }) {
   try {
     const con = await getConnection()
     const [row] = await con.query(`SELECT * FROM todos WHERE id=?`, [id])
@@ -51,4 +51,25 @@ async function deleteTodoWithId({ id }) {
   }
 }
 
-export { getAllTodos, newTodo, deleteTodoWithId }
+async function updateTitleTodo({ id, title }) {
+  try {
+    const con = await getConnection()
+    const [data] = await con.query(
+      `UPDATE todos SET title = ? WHERE id LIKE ?`,
+      [title, id]
+    )
+
+    if (data.affectedRows == 0) {
+      return { err: "No UPDATE" }
+    }
+
+    const { row } = await getTodoWithId({ id })
+
+    return { row }
+  } catch (err) {
+    console.log("Update Todo with id: " + err)
+    return { err }
+  }
+}
+
+export { getAllTodos, newTodo, deleteTodoWithId, updateTitleTodo }

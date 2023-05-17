@@ -43,11 +43,16 @@ async function getTodoWithId({ id }) {
 async function deleteTodoWithId({ id }) {
   try {
     const con = await getConnection()
-    const data = await con.query(`DELETE FROM todos WHERE id LIKE ?`, [id])
-    return { data }
+    const [result] = await con.query(`DELETE FROM todos WHERE id LIKE ?`, [id])
+
+    if (result.affectedRows === 0) {
+      return { err: "Doesn't exists any TODO with this id" }
+    }
+
+    return { data: { id } }
   } catch (err) {
     console.log("Delete Todo with id: " + err)
-    return { err }
+    return { err: "Error with the DELETE query of the todos table" }
   }
 }
 
@@ -101,4 +106,5 @@ export {
   deleteTodoWithId,
   updateTitleTodo,
   toggleCompletedTodos,
+  getTodoWithId,
 }

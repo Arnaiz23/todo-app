@@ -1,7 +1,7 @@
 import { Router } from "express"
 import {
   deleteTodoWithId,
-  getAllTodos,
+  getTodoWithId,
   newTodo,
   toggleCompletedTodos,
   updateTitleTodo,
@@ -9,12 +9,12 @@ import {
 
 const router = Router()
 
-router.get("/", (req, res) => {
+router.get("/", (_, res) => {
   const routes = [
     {
       method: "GET",
-      route: "/todos",
-      description: "Get all the TODOS",
+      route: "/todos/:id",
+      description: "Get a TODO with id",
     },
     {
       method: "POST",
@@ -41,15 +41,16 @@ router.get("/", (req, res) => {
   return res.json(routes)
 })
 
-router.get("/todos", async (req, res) => {
-  const { rows, err } = await getAllTodos()
+router.get("/todos/:id", async (req, res) => {
+  const { id } = req.params
+  const { row, err } = await getTodoWithId({ id })
 
   if (err) {
     return res.status(404).json({
       Error: "Error with the SELECT query of the todos table",
     })
   }
-  return res.status(200).json(rows)
+  return res.status(200).json(row)
 })
 
 router.post("/todos", async (req, res) => {
@@ -72,7 +73,7 @@ router.delete("/todos/:id", async (req, res) => {
 
   if (err) {
     return res.status(404).json({
-      Error: "Error with the DELETE query of the todos table",
+      Error: err,
     })
   }
 

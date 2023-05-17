@@ -21,6 +21,21 @@ router.get("/", (req, res) => {
       route: "/todos",
       description: "Create a new TODO",
     },
+    {
+      method: "DELETE",
+      route: "/todos/:id",
+      description: "Delete a TODO",
+    },
+    {
+      method: "PUT",
+      route: "/todos/:id",
+      description: "Update the title of a TODO",
+    },
+    {
+      method: "PATCH",
+      route: "/todos/:id",
+      description: "Toggle the completed field of a TODO",
+    },
   ]
 
   return res.json(routes)

@@ -72,4 +72,33 @@ async function updateTitleTodo({ id, title }) {
   }
 }
 
-export { getAllTodos, newTodo, deleteTodoWithId, updateTitleTodo }
+async function toggleCompletedTodos({ id, completed }) {
+  try {
+    const isCompleted = completed ? 1 : 0
+    const con = await getConnection()
+    const [outputs] = await con.query(
+      `UPDATE todos SET completed = ? WHERE id LIKE ?`,
+      [isCompleted, id]
+    )
+    if (outputs.changedRows === 0) {
+      return {
+        err: "This todo already have this value in the completed field",
+      }
+    }
+
+    const { row } = await getTodoWithId({ id })
+
+    return { row }
+  } catch (err) {
+    console.log("Patch Todo with id: " + err)
+    return { err: "Error with the PATCH query of the todos table" }
+  }
+}
+
+export {
+  getAllTodos,
+  newTodo,
+  deleteTodoWithId,
+  updateTitleTodo,
+  toggleCompletedTodos,
+}

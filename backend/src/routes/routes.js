@@ -3,6 +3,7 @@ import {
   deleteTodoWithId,
   getAllTodos,
   newTodo,
+  toggleCompletedTodos,
   updateTitleTodo,
 } from "../services/services.js"
 
@@ -72,6 +73,22 @@ router.put("/todos/:id", async (req, res) => {
   if (err) {
     return res.status(404).json({
       Error: "Error with the UPDATE title query of the todos table",
+    })
+  }
+
+  return res.status(200).json(row)
+})
+
+// Patch: update completed
+router.patch("/todos/:id", async (req, res) => {
+  const { id } = req.params
+  const { completed } = req.body
+
+  const { row, err } = await toggleCompletedTodos({ id, completed })
+
+  if (err) {
+    return res.status(404).json({
+      error: err,
     })
   }
 

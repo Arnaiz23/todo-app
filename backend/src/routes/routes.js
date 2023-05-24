@@ -54,12 +54,12 @@ router.get("/todos/:id", async (req, res) => {
 })
 
 router.post("/todos", async (req, res) => {
-  const { title } = req.body
-  const { row, err } = await newTodo({ title })
+  const { title, user_id } = req.body
+  const { row, err } = await newTodo({ title, user_id })
 
   if (err) {
     return res.status(404).json({
-      Error: "Error with the INSERT query of the todos table",
+      Error: err,
     })
   }
 

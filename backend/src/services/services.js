@@ -13,19 +13,35 @@ async function getAllTodos() {
   }
 }
 
-async function newTodo({ title }) {
+async function newTodo({ title, user_id }) {
   try {
+    if (typeof user_id === "undefined" || !user_id) {
+      throw new Error("User_id is required")
+    }
     const con = await getConnection()
-    const [result] = await con.query(`INSERT INTO todos (title) VALUES (?)`, [
-      title,
-    ])
+    const userExists = await checkUserExists({ con, user_id })
+
+    if (!userExists) {
+      throw new Error("This user doesn't exists")
+    }
+
+    const [result] = await con.query(
+      `INSERT INTO todos (title, user_id) VALUES (?, ?)`,
+      [title, user_id]
+    )
 
     const newId = result.insertId
     const { row } = await getTodoWithId({ id: newId })
     return { row }
   } catch (err) {
-    console.log("Insert todo " + err)
-    return { err }
+    if (err.message === "User_id is required") {
+      return { err: err.message }
+    }
+    if (err.message === "This user doesn't exists") {
+      return { err: err.message }
+    }
+    console.log("Insert todo " + err.message)
+    return { err: "Error with the INSERT query of the todos table" }
   }
 }
 
@@ -97,6 +113,24 @@ async function toggleCompletedTodos({ id, completed }) {
   } catch (err) {
     console.log("Patch Todo with id: " + err)
     return { err: "Error with the PATCH query of the todos table" }
+  }
+}
+
+async function checkUserExists({ con, user_id }) {
+  try {
+    const [user] = await con.query(
+      `SELECT DISTINCT user_id FROM todos WHERE user_id LIKE ?`,
+      [user_id]
+    )
+
+    if (typeof user[0] === "undefined") {
+      throw new Error("This user doesn't exists")
+    }
+
+    return true
+  } catch (err) {
+    console.log(err.message)
+    return false
   }
 }
 

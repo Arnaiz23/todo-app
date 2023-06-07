@@ -9,7 +9,7 @@ import {
 
 const todoRouter = Router()
 
-todoRouter.get("/todos/:id", async (req, res) => {
+todoRouter.get("/:id", async (req, res) => {
 	const { id } = req.params
 	const { row, err } = await getTodoWithId({ id })
 
@@ -21,7 +21,7 @@ todoRouter.get("/todos/:id", async (req, res) => {
 	return res.status(200).json(row)
 })
 
-todoRouter.post("/todos", async (req, res) => {
+todoRouter.post("/", async (req, res) => {
 	const { title, user_id } = req.body
 	const { row, err } = await newTodo({ title, user_id })
 
@@ -34,7 +34,7 @@ todoRouter.post("/todos", async (req, res) => {
 	return res.status(200).json(row)
 })
 
-todoRouter.delete("/todos/:id", async (req, res) => {
+todoRouter.delete("/:id", async (req, res) => {
 	const { id } = req.params
 
 	const { data, err } = await deleteTodoWithId({ id })
@@ -48,9 +48,14 @@ todoRouter.delete("/todos/:id", async (req, res) => {
 	return res.status(200).json({ data })
 })
 
-todoRouter.put("/todos/:id", async (req, res) => {
+todoRouter.put("/:id", async (req, res) => {
 	const { id } = req.params
 	const { title } = req.body
+
+	if (!title)
+		return res.status(400).json({
+			Error: "Title is required!!!",
+		})
 
 	const { row, err } = await updateTitleTodo({ id, title })
 
@@ -64,9 +69,17 @@ todoRouter.put("/todos/:id", async (req, res) => {
 })
 
 // Patch: update completed
-todoRouter.patch("/todos/:id", async (req, res) => {
+todoRouter.patch("/:id", async (req, res) => {
 	const { id } = req.params
 	const { completed } = req.body
+
+	if (typeof completed === "undefined")
+		return res
+			.status(400)
+			.json({ Error: "The new completed field is required!!!" })
+
+	if (typeof completed !== "boolean")
+		return res.status(400).json({ Error: "The completed value isn't boolean" })
 
 	const { row, err } = await toggleCompletedTodos({ id, completed })
 

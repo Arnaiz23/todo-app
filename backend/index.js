@@ -1,13 +1,11 @@
 import express from "express"
-import dotenv from "dotenv"
 import cors from "cors"
 
 import { todoRouter } from "./src/routes/Todos.routes.js"
-
-dotenv.config()
+import { usersRouter } from "./src/routes/User.routes.js"
+import { PORT } from "./src/globalVariables.js"
 
 const app = express()
-const PORT = process.env.BACKEND_PORT || 3000
 
 app.use(cors())
 app.use(express.json())
@@ -45,6 +43,7 @@ app.get("/api/", (_, res) => {
 })
 
 app.use("/api/todos", todoRouter)
+app.use("/api/users", usersRouter)
 
 app.listen(PORT, () => {
 	console.log(`The server is listening in the port: ${PORT}`)

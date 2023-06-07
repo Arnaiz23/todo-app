@@ -15,18 +15,20 @@ usersRouter.get("/login", async (req, res) => {
 			.status(400)
 			.json({ error: "The email or password field is required!!!" })
 
-	const { user, err } = await getOneUser({ email, password })
+	try {
+		const user = await getOneUser({ email, password })
 
-	if (err) return res.status(404).json({ error: err })
+		let rememberTime
 
-	let rememberTime
+		remember ? (rememberTime = "1d") : (rememberTime = "2h")
 
-	remember ? (rememberTime = "1d") : (rememberTime = "2h")
+		const payload = { name: user.name, email: user.email }
+		const token = jwt.sign(payload, SECRET_KEY, { expiresIn: rememberTime })
 
-	const payload = { name: user.name, email: user.email }
-	const token = jwt.sign(payload, SECRET_KEY, { expiresIn: rememberTime })
-
-	return res.json({ token })
+		return res.json({ token })
+	} catch (err) {
+		return res.status(404).json({ error: err })
+	}
 })
 
 usersRouter.get("/", verifyToken, async (req, res) => {

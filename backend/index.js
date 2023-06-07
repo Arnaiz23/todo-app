@@ -37,6 +37,16 @@ app.get("/api/", (_, res) => {
 			route: "/todos/:id",
 			description: "Toggle the completed field of a TODO",
 		},
+		{
+			method: "GET",
+			route: "/users/login",
+			description: "Login and return the user token",
+		},
+		{
+			method: "GET",
+			route: "/users",
+			description: "Get the user data with the token",
+		},
 	]
 
 	return res.json(routes)

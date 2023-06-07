@@ -3,10 +3,11 @@ import jwt from "jsonwebtoken"
 
 import { getOneUser } from "../services/User.services.js"
 import { SECRET_KEY } from "../globalVariables.js"
+import { verifyToken } from "../middleweares/middleweares.js"
 
 const usersRouter = Router()
 
-usersRouter.get("/", async (req, res) => {
+usersRouter.get("/login", async (req, res) => {
 	const { email, password, remember } = req.body
 
 	if (!email || !password)
@@ -26,6 +27,10 @@ usersRouter.get("/", async (req, res) => {
 	const token = jwt.sign(payload, SECRET_KEY, { expiresIn: rememberTime })
 
 	return res.json({ token })
+})
+
+usersRouter.get("/", verifyToken, async (req, res) => {
+	return res.sendStatus(200)
 })
 
 export { usersRouter }

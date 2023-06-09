@@ -22,7 +22,7 @@ usersRouter.get("/login", async (req, res) => {
 
 		remember ? (rememberTime = "1d") : (rememberTime = "2h")
 
-		const payload = { name: user.name, email: user.email }
+		const payload = { id: user.id, name: user.name, email: user.email }
 		const token = jwt.sign(payload, SECRET_KEY, { expiresIn: rememberTime })
 
 		return res.json({ token })

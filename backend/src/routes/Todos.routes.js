@@ -37,17 +37,18 @@ todoRouter.get("/:id", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.post("/", async (req, res) => {
-  const { title, user_id } = req.body
-  const { row, err } = await newTodo({ title, user_id })
+todoRouter.post("/", verifyToken, async (req, res) => {
+  const { title } = req.body
+  const user = req.user
 
-  if (err) {
+  try {
+    const row = await newTodo({ title, user })
+    return res.status(200).json(row)
+  } catch (err) {
     return res.status(404).json({
-      Error: err,
+      error: err,
     })
   }
-
-  return res.status(200).json(row)
 })
 
 todoRouter.delete("/:id", async (req, res) => {

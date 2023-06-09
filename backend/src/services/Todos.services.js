@@ -1,7 +1,4 @@
 import { getConnection } from "../database.js"
-import { checkUserExists } from "./User.services.js"
-
-// TODOS
 
 async function getAllTodos({ id }) {
   try {
@@ -16,25 +13,20 @@ async function getAllTodos({ id }) {
   }
 }
 
-async function newTodo({ title, user_id }) {
+async function newTodo({ title, user }) {
   try {
-    if (typeof user_id === "undefined" || !user_id) {
+    if (typeof user.id === "undefined" || !user.id) {
       throw new Error("User_id is required")
     }
     const con = await getConnection()
-    const userExists = await checkUserExists({ con, user_id })
-
-    if (!userExists) {
-      throw new Error("This user doesn't exists")
-    }
 
     const [result] = await con.query(
       `INSERT INTO todos (title, user_id) VALUES (?, ?)`,
-      [title, user_id]
+      [title, user.id]
     )
 
     const newId = result.insertId
-    const { row } = await getTodoWithId({ id: newId })
+    const { row } = await getTodoWithId({ id: newId, user })
     return { row }
   } catch (err) {
     // TODO. Maybe create customs Errors because is neccessary the err.name for the ifs conditions

@@ -32,7 +32,7 @@ todoRouter.get("/:id", verifyToken, async (req, res) => {
     return res.status(200).json(row)
   } catch (err) {
     return res.status(404).json({
-      Error: "Error with the SELECT query of the todos table",
+      error: "Error with the SELECT query of the todos table",
     })
   }
 })
@@ -51,18 +51,19 @@ todoRouter.post("/", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.delete("/:id", async (req, res) => {
+todoRouter.delete("/:id", verifyToken, async (req, res) => {
   const { id } = req.params
+  const user = req.user
 
-  const { data, err } = await deleteTodoWithId({ id })
+  try {
+    const data = await deleteTodoWithId({ id, user_id: user.id })
 
-  if (err) {
+    return res.status(200).json({ data })
+  } catch (err) {
     return res.status(404).json({
-      Error: err,
+      error: err,
     })
   }
-
-  return res.status(200).json({ data })
 })
 
 todoRouter.put("/:id", async (req, res) => {

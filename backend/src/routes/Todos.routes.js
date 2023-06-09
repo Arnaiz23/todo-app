@@ -23,16 +23,18 @@ todoRouter.get("/", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.get("/:id", async (req, res) => {
+todoRouter.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params
-  const { row, err } = await getTodoWithId({ id })
+  const user = req.user
 
-  if (err) {
+  try {
+    const row = await getTodoWithId({ id, user })
+    return res.status(200).json(row)
+  } catch (err) {
     return res.status(404).json({
       Error: "Error with the SELECT query of the todos table",
     })
   }
-  return res.status(200).json(row)
 })
 
 todoRouter.post("/", async (req, res) => {

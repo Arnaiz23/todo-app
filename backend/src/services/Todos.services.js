@@ -49,10 +49,13 @@ async function newTodo({ title, user_id }) {
   }
 }
 
-async function getTodoWithId({ id }) {
+async function getTodoWithId({ id, user }) {
   try {
     const con = await getConnection()
-    const [row] = await con.query(`SELECT * FROM todos WHERE id=?`, [id])
+    const [row] = await con.query(
+      `SELECT * FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
+      [id, user.id]
+    )
     return { row }
   } catch (err) {
     console.log("Get Todo with id: " + err)

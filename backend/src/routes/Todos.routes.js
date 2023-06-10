@@ -82,33 +82,34 @@ todoRouter.put("/:id", verifyToken, async (req, res) => {
     return res.status(200).json(row)
   } catch (err) {
     return res.status(404).json({
-      Error: "Error with the UPDATE title query of the todos table",
+      error: "Error with the UPDATE title query of the todos table",
     })
   }
 })
 
 // Patch: update completed
-todoRouter.patch("/:id", async (req, res) => {
+todoRouter.patch("/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const { completed } = req.body
+  const user = req.user
 
   if (typeof completed === "undefined")
     return res
       .status(400)
-      .json({ Error: "The new completed field is required!!!" })
+      .json({ error: "The new completed field is required!!!" })
 
   if (typeof completed !== "boolean")
     return res.status(400).json({ Error: "The completed value isn't boolean" })
 
-  const { row, err } = await toggleCompletedTodos({ id, completed })
+  try {
+    const row = await toggleCompletedTodos({ id, completed, user })
 
-  if (err) {
+    return res.status(200).json(row)
+  } catch (err) {
     return res.status(404).json({
       error: err,
     })
   }
-
-  return res.status(200).json(row)
 })
 
 export { todoRouter }

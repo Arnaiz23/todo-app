@@ -96,13 +96,13 @@ async function updateTitleTodo({ id, title, user }) {
   }
 }
 
-async function toggleCompletedTodos({ id, completed }) {
+async function toggleCompletedTodos({ id, completed, user }) {
   try {
     const isCompleted = completed ? 1 : 0
     const con = await getConnection()
     const [outputs] = await con.query(
-      `UPDATE todos SET completed = ? WHERE id LIKE ?`,
-      [isCompleted, id]
+      `UPDATE todos SET completed = ? WHERE id LIKE ? AND user_id LIKE ?`,
+      [isCompleted, id, user.id]
     )
     if (outputs.changedRows === 0) {
       return {
@@ -110,7 +110,7 @@ async function toggleCompletedTodos({ id, completed }) {
       }
     }
 
-    const { row } = await getTodoWithId({ id })
+    const { row } = await getTodoWithId({ id, user })
 
     return { row }
   } catch (err) {

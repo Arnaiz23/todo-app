@@ -66,24 +66,25 @@ todoRouter.delete("/:id", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.put("/:id", async (req, res) => {
+todoRouter.put("/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const { title } = req.body
+  const user = req.user
 
   if (!title)
     return res.status(400).json({
       Error: "Title is required!!!",
     })
 
-  const { row, err } = await updateTitleTodo({ id, title })
+  try {
+    const row = await updateTitleTodo({ id, title, user })
 
-  if (err) {
+    return res.status(200).json(row)
+  } catch (err) {
     return res.status(404).json({
       Error: "Error with the UPDATE title query of the todos table",
     })
   }
-
-  return res.status(200).json(row)
 })
 
 // Patch: update completed

@@ -75,19 +75,19 @@ async function deleteTodoWithId({ id, user_id }) {
   }
 }
 
-async function updateTitleTodo({ id, title }) {
+async function updateTitleTodo({ id, title, user }) {
   try {
     const con = await getConnection()
     const [data] = await con.query(
-      `UPDATE todos SET title = ? WHERE id LIKE ?`,
-      [title, id]
+      `UPDATE todos SET title = ? WHERE id LIKE ? AND user_id LIKE ?`,
+      [title, id, user.id]
     )
 
     if (data.affectedRows == 0) {
       return { err: "No UPDATE" }
     }
 
-    const { row } = await getTodoWithId({ id })
+    const { row } = await getTodoWithId({ id, user })
 
     return { row }
   } catch (err) {

@@ -6,7 +6,7 @@ async function getAllTodos({ id }) {
     const [rows] = await con.query(`SELECT * FROM todos WHERE user_id LIKE ?`, [
       id,
     ])
-    return { rows }
+    return rows
   } catch (err) {
     console.log("Get todos " + err)
     return { err }
@@ -26,8 +26,9 @@ async function newTodo({ title, user }) {
     )
 
     const newId = result.insertId
-    const { row } = await getTodoWithId({ id: newId, user })
-    return { row }
+    const row = await getTodoWithId({ id: newId, user })
+
+    return row
   } catch (err) {
     // TODO. Maybe create customs Errors because is neccessary the err.name for the ifs conditions
     if (err.message === "User_id is required") {
@@ -48,7 +49,7 @@ async function getTodoWithId({ id, user }) {
       `SELECT * FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
       [id, user.id]
     )
-    return { row }
+    return row
   } catch (err) {
     console.log("Get Todo with id: " + err)
     return { err }
@@ -68,7 +69,7 @@ async function deleteTodoWithId({ id, user_id }) {
       return { err: "doesn't exists any todo with this id" }
     }
 
-    return { id }
+    return id
   } catch (err) {
     console.log("Delete Todo with id: " + err)
     return { err: "Error with the DELETE query of the todos table" }
@@ -87,9 +88,9 @@ async function updateTitleTodo({ id, title, user }) {
       return { err: "No UPDATE" }
     }
 
-    const { row } = await getTodoWithId({ id, user })
+    const row = await getTodoWithId({ id, user })
 
-    return { row }
+    return row
   } catch (err) {
     console.log("Update Todo with id: " + err)
     return { err }
@@ -110,9 +111,9 @@ async function toggleCompletedTodos({ id, completed, user }) {
       }
     }
 
-    const { row } = await getTodoWithId({ id, user })
+    const row = await getTodoWithId({ id, user })
 
-    return { row }
+    return row
   } catch (err) {
     console.log("Patch Todo with id: " + err)
     return { err: "Error with the PATCH query of the todos table" }

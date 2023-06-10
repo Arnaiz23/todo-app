@@ -16,8 +16,8 @@ todoRouter.get("/", verifyToken, async (req, res) => {
   const user = req.user
 
   try {
-    const { rows } = await getAllTodos({ id: user.id })
-    return res.status(200).json({ rows })
+    const data = await getAllTodos({ id: user.id })
+    return res.status(200).json({ data })
   } catch (err) {
     return res.sendStatus(500)
   }
@@ -28,8 +28,9 @@ todoRouter.get("/:id", verifyToken, async (req, res) => {
   const user = req.user
 
   try {
-    const row = await getTodoWithId({ id, user })
-    return res.status(200).json(row)
+    const data = await getTodoWithId({ id, user })
+
+    return res.status(200).json({ data })
   } catch (err) {
     return res.status(404).json({
       error: "Error with the SELECT query of the todos table",
@@ -42,8 +43,9 @@ todoRouter.post("/", verifyToken, async (req, res) => {
   const user = req.user
 
   try {
-    const row = await newTodo({ title, user })
-    return res.status(200).json(row)
+    const data = await newTodo({ title, user })
+
+    return res.status(200).json({ data })
   } catch (err) {
     return res.status(404).json({
       error: err,
@@ -73,13 +75,13 @@ todoRouter.put("/:id", verifyToken, async (req, res) => {
 
   if (!title)
     return res.status(400).json({
-      Error: "Title is required!!!",
+      error: "Title is required!!!",
     })
 
   try {
-    const row = await updateTitleTodo({ id, title, user })
+    const data = await updateTitleTodo({ id, title, user })
 
-    return res.status(200).json(row)
+    return res.status(200).json({ data })
   } catch (err) {
     return res.status(404).json({
       error: "Error with the UPDATE title query of the todos table",
@@ -102,9 +104,9 @@ todoRouter.patch("/:id", verifyToken, async (req, res) => {
     return res.status(400).json({ Error: "The completed value isn't boolean" })
 
   try {
-    const row = await toggleCompletedTodos({ id, completed, user })
+    const data = await toggleCompletedTodos({ id, completed, user })
 
-    return res.status(200).json(row)
+    return res.status(200).json({ data })
   } catch (err) {
     return res.status(404).json({
       error: err,

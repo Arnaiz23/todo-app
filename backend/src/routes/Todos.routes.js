@@ -12,7 +12,7 @@ import { verifyToken } from "../middleweares/middleweares.js"
 
 const todoRouter = Router()
 
-todoRouter.get("/", verifyToken, async (req, res) => {
+todoRouter.get("/todos", verifyToken, async (req, res) => {
   const user = req.user
 
   try {
@@ -23,7 +23,7 @@ todoRouter.get("/", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.get("/:id", verifyToken, async (req, res) => {
+todoRouter.get("/todos/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const user = req.user
 
@@ -38,7 +38,7 @@ todoRouter.get("/:id", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.post("/", verifyToken, async (req, res) => {
+todoRouter.post("/todos", verifyToken, async (req, res) => {
   const { title } = req.body
   const user = req.user
 
@@ -53,7 +53,7 @@ todoRouter.post("/", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.delete("/:id", verifyToken, async (req, res) => {
+todoRouter.delete("/todos/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const user = req.user
 
@@ -68,7 +68,7 @@ todoRouter.delete("/:id", verifyToken, async (req, res) => {
   }
 })
 
-todoRouter.put("/:id", verifyToken, async (req, res) => {
+todoRouter.put("/todos/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const { title } = req.body
   const user = req.user
@@ -90,7 +90,7 @@ todoRouter.put("/:id", verifyToken, async (req, res) => {
 })
 
 // Patch: update completed
-todoRouter.patch("/:id", verifyToken, async (req, res) => {
+todoRouter.patch("/todos/:id", verifyToken, async (req, res) => {
   const { id } = req.params
   const { completed } = req.body
   const user = req.user

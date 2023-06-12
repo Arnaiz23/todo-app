@@ -31,7 +31,7 @@ usersRouter.get("/login", async (req, res) => {
   }
 })
 
-usersRouter.get("/", verifyToken, async (req, res) => {
+usersRouter.get("/users", verifyToken, async (req, res) => {
   return res.sendStatus(200)
 })
 

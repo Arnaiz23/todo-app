@@ -68,4 +68,27 @@ async function createUser({ email, password, name }) {
   }
 }
 
-export { checkUserExists, getOneUser, createUser }
+async function loginUser({ email, password }) {
+  try {
+    const con = await getConnection()
+    const [rows] = await con.execute("SELECT * FROM users WHERE email LIKE ?", [
+      email,
+    ])
+
+    const user = rows[0]
+
+    if (!user) throw new Error("This email doesn't exists")
+
+    const match = await comparePasswords(password, user.password_hashed)
+
+    if (!match) {
+      throw new Error("The passwords doesn't match")
+    }
+
+    return { user }
+  } catch (err) {
+    throw err
+  }
+}
+
+export { checkUserExists, getOneUser, createUser, loginUser }

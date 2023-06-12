@@ -2,7 +2,7 @@ import { Router } from "express"
 import { createToken } from "../libs/globalFunctions.js"
 import { verifyToken } from "../middleweares/middleweares.js"
 
-import { createUser, getOneUser } from "../services/User.services.js"
+import { createUser, getOneUser, loginUser } from "../services/User.services.js"
 
 const usersRouter = Router()
 
@@ -15,7 +15,7 @@ usersRouter.get("/login", async (req, res) => {
       .json({ error: "The email or password field is required!!!" })
 
   try {
-    const { user } = await getOneUser({ email, password })
+    const { user } = await loginUser({ email, password })
 
     let rememberTime
 
@@ -26,7 +26,7 @@ usersRouter.get("/login", async (req, res) => {
 
     return res.json({ data: token })
   } catch (err) {
-    return res.status(404).json({ error: err })
+    return res.status(404).json({ error: err.message })
   }
 })
 

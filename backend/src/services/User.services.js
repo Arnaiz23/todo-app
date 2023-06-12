@@ -23,24 +23,25 @@ async function checkUserExists({ con, user_id }) {
   }
 }
 
-async function getOneUser({ email, password }) {
+async function getOneUser({ id }) {
   try {
     const con = await getConnection()
 
-    const [result] = await con.execute(
-      "SELECT * FROM users WHERE email LIKE ?",
-      [email]
-    )
+    const [result] = await con.execute("SELECT * FROM users WHERE id LIKE ?", [
+      id,
+    ])
 
     if (result.length <= 0) throw new Error(ERROR_MESSAGES.USER_NOT_EXISTS)
 
     const user = result[0]
 
-    const compared = await comparePasswords(password, user.password_hashed)
-
-    if (!compared) throw new Error(ERROR_MESSAGES.USER_NOT_EXISTS)
-
-    return { user }
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    }
   } catch (err) {
     console.log(err.message)
     if (err.message === ERROR_MESSAGES.USER_NOT_EXISTS)

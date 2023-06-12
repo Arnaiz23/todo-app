@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { createToken } from "../libs/globalFunctions.js"
+import { verifyToken } from "../middleweares/middleweares.js"
 
 import { createUser, getOneUser } from "../services/User.services.js"
 
@@ -44,9 +45,21 @@ usersRouter.post("/register", async (req, res) => {
 
     const token = await createToken(payload, "2h")
 
-    return res.status(200).json({ data: token })
+    return res.status(201).json({ data: token })
   } catch (err) {
     return res.status(409).json({ error: err.message })
+  }
+})
+
+usersRouter.get("/users", verifyToken, async (req, res) => {
+  const user = req.user
+
+  try {
+    const data = await getOneUser({ id: user.id })
+
+    return res.status(200).json({ data })
+  } catch (err) {
+    return res.status(404).json({ error: err })
   }
 })
 

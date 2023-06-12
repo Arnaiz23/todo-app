@@ -3,9 +3,10 @@ import { getConnection } from "../database.js"
 async function getAllTodos({ id }) {
   try {
     const con = await getConnection()
-    const [rows] = await con.query(`SELECT * FROM todos WHERE user_id LIKE ?`, [
-      id,
-    ])
+    const [rows] = await con.execute(
+      `SELECT * FROM todos WHERE user_id LIKE ?`,
+      [id]
+    )
     return rows
   } catch (err) {
     console.log("Get todos " + err)
@@ -20,7 +21,7 @@ async function newTodo({ title, user }) {
     }
     const con = await getConnection()
 
-    const [result] = await con.query(
+    const [result] = await con.execute(
       `INSERT INTO todos (title, user_id) VALUES (?, ?)`,
       [title, user.id]
     )
@@ -45,7 +46,7 @@ async function newTodo({ title, user }) {
 async function getTodoWithId({ id, user }) {
   try {
     const con = await getConnection()
-    const [row] = await con.query(
+    const [row] = await con.execute(
       `SELECT * FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
       [id, user.id]
     )
@@ -59,7 +60,7 @@ async function getTodoWithId({ id, user }) {
 async function deleteTodoWithId({ id, user_id }) {
   try {
     const con = await getConnection()
-    const [result] = await con.query(
+    const [result] = await con.execute(
       `DELETE FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
       [id, user_id]
     )
@@ -79,7 +80,7 @@ async function deleteTodoWithId({ id, user_id }) {
 async function updateTitleTodo({ id, title, user }) {
   try {
     const con = await getConnection()
-    const [data] = await con.query(
+    const [data] = await con.execute(
       `UPDATE todos SET title = ? WHERE id LIKE ? AND user_id LIKE ?`,
       [title, id, user.id]
     )
@@ -101,7 +102,7 @@ async function toggleCompletedTodos({ id, completed, user }) {
   try {
     const isCompleted = completed ? 1 : 0
     const con = await getConnection()
-    const [outputs] = await con.query(
+    const [outputs] = await con.execute(
       `UPDATE todos SET completed = ? WHERE id LIKE ? AND user_id LIKE ?`,
       [isCompleted, id, user.id]
     )

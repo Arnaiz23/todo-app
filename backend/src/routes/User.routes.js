@@ -1,9 +1,7 @@
 import { Router } from "express"
-import jwt from "jsonwebtoken"
+import { createToken } from "../libs/globalFunctions.js"
 
-import { getOneUser } from "../services/User.services.js"
-import { SECRET_KEY } from "../globalVariables.js"
-import { verifyToken } from "../middleweares/middleweares.js"
+import { createUser, getOneUser } from "../services/User.services.js"
 
 const usersRouter = Router()
 
@@ -23,16 +21,33 @@ usersRouter.get("/login", async (req, res) => {
     remember ? (rememberTime = "1d") : (rememberTime = "2h")
 
     const payload = { id: user.id, name: user.name, email: user.email }
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: rememberTime })
+    const token = await createToken(payload, rememberTime)
 
-    return res.json({ token })
+    return res.json({ data: token })
   } catch (err) {
     return res.status(404).json({ error: err })
   }
 })
 
-usersRouter.get("/users", verifyToken, async (req, res) => {
-  return res.sendStatus(200)
+usersRouter.post("/register", async (req, res) => {
+  const { email, password, name } = req.body
+
+  if (!email || !password || !name)
+    return res
+      .status(400)
+      .json({ error: "The email, password and name fields are required!!!" })
+
+  try {
+    const newUserId = await createUser({ email, password, name })
+
+    const payload = { id: newUserId, name, email }
+
+    const token = await createToken(payload, "2h")
+
+    return res.status(200).json({ data: token })
+  } catch (err) {
+    return res.status(409).json({ error: err.message })
+  }
 })
 
 export { usersRouter }

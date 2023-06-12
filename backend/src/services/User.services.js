@@ -1,6 +1,5 @@
-import bcrypt from "bcrypt"
-
 import { getConnection } from "../database.js"
+import { comparePasswords, hashedPassword } from "../libs/globalFunctions.js"
 
 const ERROR_MESSAGES = {
   USER_NOT_EXISTS: "The email or password doesn't exists",
@@ -51,8 +50,21 @@ async function getOneUser({ email, password }) {
   }
 }
 
-export { checkUserExists, getOneUser }
+async function createUser({ email, password, name }) {
+  try {
+    const con = await getConnection()
 
-const comparePasswords = async (password, recivedPassword) => {
-  return await bcrypt.compare(password, recivedPassword)
+    const password_hashed = await hashedPassword(password)
+
+    const [{ insertId }] = await con.execute(
+      "INSERT INTO users (email, password_hashed, name) VALUES (?,?,?)",
+      [email, password_hashed, name]
+    )
+
+    return insertId
+  } catch (err) {
+    throw new Error("This email is already registered!!!")
+  }
 }
+
+export { checkUserExists, getOneUser, createUser }

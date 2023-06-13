@@ -2,6 +2,8 @@ import { createPool } from "mysql2"
 import dotenv from "dotenv"
 dotenv.config()
 
+import { DatabaseConnectionError } from "./libs/customErrors.js"
+
 const pool = createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -12,11 +14,9 @@ const pool = createPool({
 async function getConnection() {
   try {
     const connection = await pool.getConnection()
-    console.log("Connected to MySQL")
     return connection
   } catch (err) {
-    console.log("Error connection")
-    console.log(err)
+    throw new DatabaseConnectionError("Error with the database connection")
   }
 }
 

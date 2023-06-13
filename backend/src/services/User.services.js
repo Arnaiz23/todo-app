@@ -1,8 +1,12 @@
 import { getConnection } from "../database.js"
 import { comparePasswords, hashedPassword } from "../libs/globalFunctions.js"
+import {
+  DatabaseConnectionError,
+  PropertyNotMatch,
+} from "../libs/customErrors.js"
 
 const ERROR_MESSAGES = {
-  USER_NOT_EXISTS: "The email or password doesn't exists",
+  USER_NOT_EXISTS: "Doesn't exists any user with this id",
 }
 
 async function checkUserExists({ con, user_id }) {
@@ -31,7 +35,8 @@ async function getOneUser({ id }) {
       id,
     ])
 
-    if (result.length <= 0) throw new Error(ERROR_MESSAGES.USER_NOT_EXISTS)
+    if (result.length <= 0)
+      throw new PropertyNotMatch(ERROR_MESSAGES.USER_NOT_EXISTS)
 
     const user = result[0]
 
@@ -43,11 +48,7 @@ async function getOneUser({ id }) {
       updated_at: user.updated_at,
     }
   } catch (err) {
-    console.log(err.message)
-    if (err.message === ERROR_MESSAGES.USER_NOT_EXISTS)
-      return { err: err.message }
-
-    return { err: "Error in the SELECT user" }
+    throw err
   }
 }
 
@@ -64,7 +65,8 @@ async function createUser({ email, password, name }) {
 
     return insertId
   } catch (err) {
-    throw new Error("This email is already registered!!!")
+    if (err instanceof DatabaseConnectionError) throw err
+    throw new PropertyNotMatch("This email is already registered!!!", 409)
   }
 }
 
@@ -77,12 +79,12 @@ async function loginUser({ email, password }) {
 
     const user = rows[0]
 
-    if (!user) throw new Error("This email doesn't exists")
+    if (!user) throw new PropertyNotMatch("This email doesn't exists")
 
     const match = await comparePasswords(password, user.password_hashed)
 
     if (!match) {
-      throw new Error("The passwords doesn't match")
+      throw new PropertyNotMatch("The passwords doesn't match")
     }
 
     return { user }

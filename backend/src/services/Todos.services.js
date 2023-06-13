@@ -9,16 +9,12 @@ async function getAllTodos({ id }) {
     )
     return rows
   } catch (err) {
-    console.log("Get todos " + err)
-    return { err }
+    throw err
   }
 }
 
 async function newTodo({ title, user }) {
   try {
-    if (typeof user.id === "undefined" || !user.id) {
-      throw new Error("User_id is required")
-    }
     const con = await getConnection()
 
     const [result] = await con.execute(
@@ -31,15 +27,7 @@ async function newTodo({ title, user }) {
 
     return row
   } catch (err) {
-    // TODO. Maybe create customs Errors because is neccessary the err.name for the ifs conditions
-    if (err.message === "User_id is required") {
-      return { err: err.message }
-    }
-    if (err.message === "This user doesn't exists") {
-      return { err: err.message }
-    }
-    console.log("Insert todo " + err.message)
-    return { err: "Error with the INSERT query of the todos table" }
+    throw err
   }
 }
 
@@ -50,10 +38,13 @@ async function getTodoWithId({ id, user }) {
       `SELECT * FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
       [id, user.id]
     )
-    return row
+
+    if (row.length <= 0)
+      throw new Error("This user doesn't have any todo with this id")
+
+    return row[0]
   } catch (err) {
-    console.log("Get Todo with id: " + err)
-    return { err }
+    throw err
   }
 }
 
@@ -66,14 +57,12 @@ async function deleteTodoWithId({ id, user_id }) {
     )
 
     if (result.affectedRows === 0) {
-      // throw new Error("doesn't exists any todo with this id")
-      return { err: "doesn't exists any todo with this id" }
+      throw new Error("doesn't exists any todo with this id")
     }
 
     return id
   } catch (err) {
-    console.log("Delete Todo with id: " + err)
-    return { err: "Error with the DELETE query of the todos table" }
+    throw err
   }
 }
 
@@ -86,15 +75,14 @@ async function updateTitleTodo({ id, title, user }) {
     )
 
     if (data.affectedRows == 0) {
-      return { err: "No UPDATE" }
+      throw new Error("Error in the save process")
     }
 
     const row = await getTodoWithId({ id, user })
 
     return row
   } catch (err) {
-    console.log("Update Todo with id: " + err)
-    return { err }
+    throw err
   }
 }
 
@@ -106,18 +94,18 @@ async function toggleCompletedTodos({ id, completed, user }) {
       `UPDATE todos SET completed = ? WHERE id LIKE ? AND user_id LIKE ?`,
       [isCompleted, id, user.id]
     )
+
     if (outputs.changedRows === 0) {
-      return {
-        err: "This todo already have this value in the completed field",
-      }
+      throw new Error(
+        "This todo already have this value in the completed field"
+      )
     }
 
     const row = await getTodoWithId({ id, user })
 
     return row
   } catch (err) {
-    console.log("Patch Todo with id: " + err)
-    return { err: "Error with the PATCH query of the todos table" }
+    throw err
   }
 }
 

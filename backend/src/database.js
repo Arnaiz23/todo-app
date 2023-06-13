@@ -4,6 +4,10 @@ dotenv.config()
 
 import { DatabaseConnectionError } from "./libs/customErrors.js"
 
+const ERROR_MESSAGE = {
+  DATABASE_CONNECTION: "Error with the database connection",
+}
+
 const pool = createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -16,7 +20,7 @@ async function getConnection() {
     const connection = await pool.getConnection()
     return connection
   } catch (err) {
-    throw new DatabaseConnectionError("Error with the database connection")
+    throw new DatabaseConnectionError(ERROR_MESSAGE.DATABASE_CONNECTION)
   }
 }
 

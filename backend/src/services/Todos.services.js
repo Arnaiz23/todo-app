@@ -1,5 +1,12 @@
 import { getConnection } from "../database.js"
 
+const ERROR_MESSAGES = {
+  TODO_USER_NOT_EXISTS: "This user doesn't have any todo with this id",
+  TODO_ID_NOT_EXISTS: "Doesn't exists any todo with this id",
+  SAVE_PROCESS: "Error in the save process",
+  COMPLETED_SAME: "This todo already have this value in the completed field",
+}
+
 async function getAllTodos({ id }) {
   try {
     const con = await getConnection()
@@ -39,8 +46,7 @@ async function getTodoWithId({ id, user }) {
       [id, user.id]
     )
 
-    if (row.length <= 0)
-      throw new Error("This user doesn't have any todo with this id")
+    if (row.length <= 0) throw new Error(ERROR_MESSAGES.TODO_USER_NOT_EXISTS)
 
     return row[0]
   } catch (err) {
@@ -57,7 +63,7 @@ async function deleteTodoWithId({ id, user_id }) {
     )
 
     if (result.affectedRows === 0) {
-      throw new Error("doesn't exists any todo with this id")
+      throw new Error(ERROR_MESSAGES.TODO_ID_NOT_EXISTS)
     }
 
     return id
@@ -75,7 +81,7 @@ async function updateTitleTodo({ id, title, user }) {
     )
 
     if (data.affectedRows == 0) {
-      throw new Error("Error in the save process")
+      throw new Error(ERROR_MESSAGES.SAVE_PROCESS)
     }
 
     const row = await getTodoWithId({ id, user })
@@ -96,9 +102,7 @@ async function toggleCompletedTodos({ id, completed, user }) {
     )
 
     if (outputs.changedRows === 0) {
-      throw new Error(
-        "This todo already have this value in the completed field"
-      )
+      throw new Error(ERROR_MESSAGES.COMPLETED_SAME)
     }
 
     const row = await getTodoWithId({ id, user })

@@ -6,12 +6,14 @@ import {
   login,
   registerNewUser,
 } from "../controllers/Users.controllers.js"
+import { loginSchema, registerSchema } from "../schemas/user.schema.js"
+import { validateSchema } from "../middleweares/validator.middleweare.js"
 
 const usersRouter = Router()
 
-usersRouter.get("/login", login)
+usersRouter.get("/login", validateSchema(loginSchema), login)
 
-usersRouter.post("/register", registerNewUser)
+usersRouter.post("/register", validateSchema(registerSchema), registerNewUser)
 
 usersRouter.get("/users", verifyToken, getUserData)
 

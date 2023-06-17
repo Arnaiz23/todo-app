@@ -11,7 +11,7 @@ import { validateSchema } from "../middleweares/validator.middleweare.js"
 
 const usersRouter = Router()
 
-usersRouter.get("/login", validateSchema(loginSchema), login)
+usersRouter.post("/login", validateSchema(loginSchema), login)
 
 usersRouter.post("/register", validateSchema(registerSchema), registerNewUser)
 

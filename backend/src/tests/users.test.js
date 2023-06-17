@@ -1,5 +1,6 @@
 import supertest from "supertest"
 import { app } from "../app.js"
+import { getConnection } from "../database.js"
 
 const api = supertest(app)
 
@@ -22,6 +23,11 @@ describe("POST /register", () => {
     password: "123456",
     name: "test",
   }
+
+  beforeEach(async () => {
+    const con = await getConnection()
+    await con.query("DELETE FROM users WHERE email LIKE ?", [newUser.email])
+  })
 
   const urlRegister = `${url}/register`
 
@@ -53,11 +59,16 @@ describe("POST /register", () => {
       expect(response.statusCode).toBe(400)
     })
 
-    // test("should return a json object that contains an error message.", async () => {})
+    test("should return a json object that contains an error message.", async () => {
+      const response = await api
+        .post(urlRegister)
+        .send({ email: newUser.email })
+      expect(response.body.error).toBeDefined()
+    })
 
     test("should specify json as the content type in the http header.", async () => {
       const response = await api.post(urlRegister).send({
-        email: "test@gmail.com",
+        email: newUser.email,
       })
       expect(response.headers["content-type"]).toEqual(
         expect.stringContaining("json")

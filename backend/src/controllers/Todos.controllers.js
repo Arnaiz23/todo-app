@@ -56,9 +56,9 @@ export async function deleteTodo(req, res) {
   const user = req.user
 
   try {
-    const data = await deleteTodoWithId({ id, user_id: user.id })
+    await deleteTodoWithId({ id, user_id: user.id })
 
-    return res.status(200).json({ data })
+    return res.sendStatus(204)
   } catch (err) {
     return res.status(404).json({
       error: err.message,

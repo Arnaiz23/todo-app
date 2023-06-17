@@ -18,7 +18,7 @@ export async function login(req, res) {
     const payload = { id: user.id, name: user.name, email: user.email }
     const token = await createToken(payload, rememberTime)
 
-    return res.json({ data: token })
+    return res.status(200).json({ data: token })
   } catch (err) {
     return res.status(err.statusCode).json({ error: err.message })
   }

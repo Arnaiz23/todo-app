@@ -16,25 +16,52 @@ describe("Server is running correctly", () => {
   })
 })
 
-describe("Users routes", () => {
-  it("Create new user. Correct data. Only work the first time or if the user doesn't exists.", async () => {
-    const newUser = {
-      email: "test@gmail.com",
-      password: "123456",
-      name: "test",
-    }
+describe("POST /register", () => {
+  const newUser = {
+    email: "test@gmail.com",
+    password: "123456",
+    name: "test",
+  }
 
-    const response = await api.post(`${url}/register`).send(newUser)
-    expect(response.statusCode).toBe(201)
+  const urlRegister = `${url}/register`
+
+  describe("when passed email, password(>=6) and name", () => {
+    test("should response with a 201 statusCode", async () => {
+      const response = await api.post(urlRegister).send(newUser)
+      expect(response.statusCode).toBe(201)
+    })
+
+    test("should specify json as the content type in the http header", async () => {
+      const response = await api.post(urlRegister).send(newUser)
+      expect(response.headers["content-type"]).toEqual(
+        expect.stringContaining("json")
+      )
+    })
+
+    test("should contain the token", async () => {
+      const response = await api.post(urlRegister).send(newUser)
+      expect(response.body.data).toBeDefined()
+    })
   })
 
-  it("Create new user. Incorrect data. Password with length less than 6.", async () => {
-    const newUser = {
-      email: "test10@gmail.com",
-      password: "test",
-      name: "test",
-    }
+  describe("when the email, password or name is missing", () => {
+    test("should return a 400 statusCode", async () => {
+      const response = await api.post(urlRegister).send({
+        email: "test@gmail.com",
+        name: "test",
+      })
+      expect(response.statusCode).toBe(400)
+    })
 
-    await api.post(`${url}/register`).send(newUser).expect(400)
+    // test("should return a json object that contains an error message.", async () => {})
+
+    test("should specify json as the content type in the http header.", async () => {
+      const response = await api.post(urlRegister).send({
+        email: "test@gmail.com",
+      })
+      expect(response.headers["content-type"]).toEqual(
+        expect.stringContaining("json")
+      )
+    })
   })
 })

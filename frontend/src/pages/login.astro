@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FormLogin from "../components/FormLogin.jsx";
+---
+
+<BaseLayout>
+  <div class="flex justify-center items-center w-full h-screen">
+    <div
+      class="flex flex-col justify-center items-center gap-3 bg-zinc-900 w-[80%] sm:w-80 h-80"
+    >
+      <h1 class="text-3xl font-bold">Login</h1>
+      <FormLogin client:load />
+    </div>
+  </div>
+</BaseLayout>

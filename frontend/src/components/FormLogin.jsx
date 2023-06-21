@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const FormLogin = () => {
+const FormLogin = ({ button }) => {
   const [data, setData] = useState({ email: "", password: "" })
 
   const handleSubmit = (e) => {
@@ -36,7 +36,7 @@ const FormLogin = () => {
         />
       </label>
       <button type="submit" className="bg-cyan-700 p-2 rounded">
-        Login
+        {button}
       </button>
     </form>
   )

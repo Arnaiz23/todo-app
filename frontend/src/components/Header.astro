@@ -1,0 +1,21 @@
+---
+const { user, userLogged } = Astro.props;
+---
+
+<header
+  class="p-4 border-b border-b-white w-full flex justify-between items-center"
+>
+  <h3>Icon</h3>
+  {
+    userLogged ? (
+      <>
+        <h2>Welcome {user}</h2>
+        <button class="py-2 px-4 rounded bg-red-700 font-bold">Logout</button>
+      </>
+    ) : (
+      <a href="/login" class="py-2 px-4 bg-cyan-700 rounded font-bold">
+        Login
+      </a>
+    )
+  }
+</header>

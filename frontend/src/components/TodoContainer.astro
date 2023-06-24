@@ -1,0 +1,9 @@
+---
+const {title, completed} = Astro.props
+---
+
+<li class="flex justify-between items-center p-3 py-5 border-b border-b-white group">
+  <input type="checkbox" checked={completed === 0 ? false : true} />
+  <p>{title}</p>
+  <button class="invisible group-hover:visible">X</button>
+</li>

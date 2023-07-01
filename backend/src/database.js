@@ -1,8 +1,9 @@
 import { createPool } from "mysql2"
 import dotenv from "dotenv"
-dotenv.config()
 
 import { DatabaseConnectionError } from "./libs/customErrors.js"
+
+dotenv.config()
 
 const ERROR_MESSAGE = {
   DATABASE_CONNECTION: "Error with the database connection",

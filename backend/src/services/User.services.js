@@ -13,11 +13,11 @@ const ERROR_MESSAGES = {
   PASSWORD_NOT_MATCH: "The passwords doesn't match",
 }
 
-async function checkUserExists({ con, user_id }) {
+async function checkUserExists({ con, userId }) {
   try {
     const [user] = await con.execute(
       `SELECT DISTINCT user_id FROM todos WHERE user_id LIKE ?`,
-      [user_id]
+      [userId]
     )
 
     if (typeof user[0] === "undefined") {
@@ -32,7 +32,6 @@ async function checkUserExists({ con, user_id }) {
 }
 
 async function getOneUser({ id }) {
-  try {
     const con = await getConnection()
 
     const [result] = await con.execute("SELECT * FROM users WHERE id LIKE ?", [
@@ -51,20 +50,17 @@ async function getOneUser({ id }) {
       created_at: user.created_at,
       updated_at: user.updated_at,
     }
-  } catch (err) {
-    throw err
-  }
 }
 
 async function createUser({ email, password, name }) {
   try {
     const con = await getConnection()
 
-    const password_hashed = await hashedPassword(password)
+    const passwordHashed = await hashedPassword(password)
 
     const [{ insertId }] = await con.execute(
       "INSERT INTO users (email, password_hashed, name) VALUES (?,?,?)",
-      [email, password_hashed, name]
+      [email, passwordHashed, name]
     )
 
     return insertId
@@ -75,26 +71,22 @@ async function createUser({ email, password, name }) {
 }
 
 async function loginUser({ email, password }) {
-  try {
-    const con = await getConnection()
-    const [rows] = await con.execute("SELECT * FROM users WHERE email LIKE ?", [
-      email,
-    ])
+  const con = await getConnection()
+  const [rows] = await con.execute("SELECT * FROM users WHERE email LIKE ?", [
+    email,
+  ])
 
-    const user = rows[0]
+  const user = rows[0]
 
-    if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_NOT_EXISTS)
+  if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_NOT_EXISTS)
 
-    const match = await comparePasswords(password, user.password_hashed)
+  const match = await comparePasswords(password, user.password_hashed)
 
-    if (!match) {
-      throw new PropertyNotMatch(ERROR_MESSAGES.PASSWORD_NOT_MATCH)
-    }
-
-    return { user }
-  } catch (err) {
-    throw err
+  if (!match) {
+    throw new PropertyNotMatch(ERROR_MESSAGES.PASSWORD_NOT_MATCH)
   }
+
+  return { user }
 }
 
 export { checkUserExists, getOneUser, createUser, loginUser }

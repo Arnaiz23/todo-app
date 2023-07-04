@@ -41,27 +41,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "string",
-              "items": {
-                "data": "token"
-              }
-            }
-          },
-          "404": {
-            "description": "successful operation",
-            "schema": {
-              "type": "string",
-              "items": {
-                "data": "token"
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid body",
-            "schema": {
               "type": "object",
               "properties": {
-                "data": "token"
+                "data": {
+                  "type": "string",
+                  "example": "token"
+                }
               }
             }
           }

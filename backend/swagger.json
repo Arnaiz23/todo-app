@@ -11,12 +11,19 @@
   "schemes": ["http"],
   "host": "http://localhost:4000",
   "basePath": "/api",
+  "tags": [
+    {
+      "name": "User",
+      "description": "User routes"
+    }
+  ],
   "paths": {
     "/login": {
       "post": {
         "summary": "Login in the API",
         "description": "Login in the API",
         "produces": ["application/json"],
+        "tags": ["User"],
         "parameters": [
           {
             "in": "body",

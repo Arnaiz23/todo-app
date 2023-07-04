@@ -1,9 +1,11 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
+import swaggerUiExpress from "swagger-ui-express"
 
 import { todoRouter } from "./routes/Todos.routes.js"
-import { usersRouter } from ".//routes/User.routes.js"
+import { usersRouter } from "./routes/User.routes.js"
+import swaggerDocument from "../swagger.json" assert { type: "json" }
 
 const app = express()
 
@@ -11,6 +13,11 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan("dev"))
 
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup(swaggerDocument)
+)
 app.get("/api/", (_, res) => {
   const routes = [
     {

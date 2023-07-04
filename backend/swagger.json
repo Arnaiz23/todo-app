@@ -1,29 +1,32 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is the documentation of the todo-app API.",
-    "version": "1.0.0",
     "title": "Todo-app",
+    "description": "This is the documentation of the todo-app API",
     "contact": {
       "email": "adri.arnaizfernandez@gmail.com"
-    }
+    },
+    "version": "1.0.0"
   },
-  "schemes": ["http"],
-  "host": "http://localhost:4000",
+  "schemes": ["http", "https"],
+  "host": "localhost:4000",
   "basePath": "/api",
   "tags": [
     {
-      "name": "User",
-      "description": "User routes"
+      "name": "user",
+      "description": "Operations about user"
+    },
+    {
+      "name": "todos",
+      "description": "Operations about the todos"
     }
   ],
   "paths": {
     "/login": {
       "post": {
         "summary": "Login in the API",
-        "description": "Login in the API",
         "produces": ["application/json"],
-        "tags": ["User"],
+        "tags": ["user"],
         "parameters": [
           {
             "in": "body",
@@ -56,10 +59,416 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "email or password missing",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Register in the API",
+        "produces": ["application/json"],
+        "tags": ["user"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User body register",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@gmail.com"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "token"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "email, password or name missing",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This user is already exists",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "This email is already registered!!!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get the data of an user",
+        "produces": ["application/json"],
+        "tags": ["user"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "succesful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todos": {
+      "get": {
+        "summary": "Get the todos of an user",
+        "produces": ["application/json"],
+        "tags": ["todos"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "succesful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "completed": {
+                        "type": "boolean"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "updated_at": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or missing token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new todo",
+        "produces": ["application/json"],
+        "tags": ["todos"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "todo title",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "succesful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "title is missing"
+          },
+          "401": {
+            "description": "invalid or missing token"
+          }
+        }
+      }
+    },
+    "/todos/{id}": {
+      "put": {
+        "summary": "Update the title of a todo",
+        "produces": ["application/json"],
+        "tags": ["todos"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "todo id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "todo title",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "succesful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "title is missing"
+          },
+          "401": {
+            "description": "invalid or missing token"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the completed of a todo",
+        "produces": ["application/json"],
+        "tags": ["todos"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "todo id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "todo title",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "completed": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "succesful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "title is missing"
+          },
+          "401": {
+            "description": "invalid or missing token"
+          },
+          "404": {
+            "description": "This todo already have this value in the completed field"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a todo",
+        "produces": ["application/json"],
+        "tags": ["todos"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "todo id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "Bearer token",
+            "description": "user token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "succesful operation"
+          },
+          "401": {
+            "description": "invalid or missing token"
           }
         }
       }
     }
-  },
-  "definitions": {}
+  }
 }

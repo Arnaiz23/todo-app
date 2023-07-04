@@ -2,6 +2,7 @@ import { Route } from "wouter"
 
 import "./App.css"
 import Home from "./pages/Home.jsx"
+import Login from "./pages/Login.jsx"
 
 function App() {
 
@@ -11,7 +12,7 @@ function App() {
         <Home />
       </Route>
       <Route path="/login">
-        <h1>Login</h1>
+        <Login />
       </Route>
     </div>
   )

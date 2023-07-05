@@ -73,6 +73,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       }
@@ -144,6 +147,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       }
@@ -174,6 +180,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       }
@@ -226,6 +235,9 @@
           },
           "401": {
             "description": "invalid or missing token"
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       },
@@ -290,6 +302,9 @@
           },
           "401": {
             "description": "invalid or missing token"
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       }
@@ -363,6 +378,9 @@
           },
           "401": {
             "description": "invalid or missing token"
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       },
@@ -437,6 +455,9 @@
           },
           "404": {
             "description": "This todo already have this value in the completed field"
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       },
@@ -466,6 +487,9 @@
           },
           "401": {
             "description": "invalid or missing token"
+          },
+          "500": {
+            "description": "Error with the database connection"
           }
         }
       }

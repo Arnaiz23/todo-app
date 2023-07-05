@@ -1,4 +1,5 @@
 import { useState } from "react"
+import FormContainer from "./FormContainer"
 
 const FormLogin = () => {
   const [login, setLogin] = useState({
@@ -19,12 +20,9 @@ const FormLogin = () => {
   }
 
   return (
-    <form
-      className="flex flex-col justify-center items-center gap-3 w-[90%]"
-      onSubmit={handleSubmit}
-    >
+    <FormContainer handleSubmit={handleSubmit} buttonTitle={"Login"}>
       <div className="flex flex-col justify-start items-start gap-1 w-[90%]">
-        <label htmlFor="email">
+        <label htmlFor="email" title="required">
           Email <span className="text-red-600">*</span>
         </label>
         <input
@@ -37,7 +35,7 @@ const FormLogin = () => {
         />
       </div>
       <div className="flex flex-col justify-start items-start gap-1 w-[90%]">
-        <label htmlFor="password">
+        <label htmlFor="password" title="required">
           Password <span className="text-red-600">*</span>
         </label>
         <input
@@ -50,10 +48,7 @@ const FormLogin = () => {
           minLength={6}
         />
       </div>
-      <button type="submit" className="bg-cyan-700 p-2 rounded">
-        Login
-      </button>
-    </form>
+    </FormContainer>
   )
 }
 

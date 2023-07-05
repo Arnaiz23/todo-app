@@ -1,4 +1,5 @@
 import { BACKEND_URL } from "../consts"
+import { getToken } from "../libs/functions"
 
 export async function loginService({ login }) {
   const response = await fetch(`${BACKEND_URL}/login`, {
@@ -23,6 +24,22 @@ export async function registerService({ register }) {
       "Content-type": "application/json",
     },
     body: JSON.stringify(register),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
+  }
+
+  return await response.json()
+}
+
+export async function getUserData() {
+  const token = getToken()
+
+  const response = await fetch(`${BACKEND_URL}/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
 
   if (!response.ok) {

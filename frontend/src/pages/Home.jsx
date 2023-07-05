@@ -12,8 +12,14 @@ const Home = () => {
   useEffect(() => {
     if (!localStorage.getItem("token")) return
     ;(async () => {
-      const json = await getTodos()
-      setTodos(json.data)
+      try {
+        const json = await getTodos()
+        setTodos(json.data)
+      } catch (error) {
+        // TODO: handle the errors
+        localStorage.removeItem("token")
+        console.error(error.message)
+      }
     })()
   }, [])
 

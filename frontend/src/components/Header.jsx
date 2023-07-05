@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "wouter"
-import { BACKEND_URL } from "../consts"
+
+import { getUserData } from "../services/users.services"
 
 const Header = () => {
   // TODO: This userLogged is in the Context for change all the conditions in Home Component
@@ -12,29 +13,14 @@ const Header = () => {
   useEffect(() => {
     if (!userLogged) return
 
-    async function getUserData() {
+    ;(async () => {
       try {
-        const token = localStorage.getItem("token")
-
-        const response = await fetch(`${BACKEND_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error("Error HTTP: ", response.status)
-        }
-
-        const json = await response.json()
-
+        const json = await getUserData()
         setUser(json.data)
       } catch (error) {
         console.error(error.message)
       }
-    }
-
-    getUserData()
+    })()
   }, [userLogged])
 
   return (
@@ -42,7 +28,9 @@ const Header = () => {
       <h3>Icon</h3>
       {userLogged ? (
         <>
-          <h2 className="text-xl">Welcome <span className="font-bold capitalize">{user.name}</span></h2>
+          <h2 className="text-xl">
+            Welcome <span className="font-bold capitalize">{user.name}</span>
+          </h2>
           <button
             href="/logout"
             className="py-2 px-4 bg-red-700 rounded font-bold"

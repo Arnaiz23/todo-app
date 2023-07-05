@@ -1,26 +1,19 @@
 import { BACKEND_URL } from "../consts.js"
-
-function getToken() {
-  return localStorage.getItem("token")
-}
+import { getToken } from "../libs/functions.js"
 
 export async function getTodos() {
-  try {
-    const token = getToken()
-    const response = await fetch(`${BACKEND_URL}/todos`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+  const token = getToken()
+  const response = await fetch(`${BACKEND_URL}/todos`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
 
-    if (!response.ok) {
-      throw new Error("Error HTTP: ", response.status)
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error(error.message)
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
   }
+
+  return await response.json()
 }
 
 export async function deleteTodo({ id }) {

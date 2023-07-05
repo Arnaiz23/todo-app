@@ -16,7 +16,7 @@ app.use(morgan("dev"))
 app.use(
   "/docs",
   swaggerUiExpress.serve,
-  swaggerUiExpress.setup(swaggerDocument)
+  swaggerUiExpress.setup(swaggerDocument, {customSiteTitle: "Todo-app docs"})
 )
 app.get("/api/", (_, res) => {
   const routes = [

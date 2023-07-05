@@ -2,13 +2,14 @@ import { useState } from "react"
 import FormContainer from "./FormContainer"
 import { BACKEND_URL } from "../consts"
 import { useLocation } from "wouter"
+import { loginService } from "../services/users.services"
 
 const FormLogin = () => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
   })
-  const [,setLocation] = useLocation()
+  const [, setLocation] = useLocation()
 
   const handleChange = (event) => {
     setLogin({
@@ -22,25 +23,10 @@ const FormLogin = () => {
 
     if (login.email === "" || login.password === "") return
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify(login),
-      })
+    const json = await loginService({ login })
 
-      if(!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`)
-      }
-
-      const json = await response.json()
-      localStorage.setItem("token", json.data)
-      setLocation("/")
-    } catch (error) {
-      console.error(error.message)
-    }
+    localStorage.setItem("token", json.data)
+    setLocation("/")
   }
 
   return (

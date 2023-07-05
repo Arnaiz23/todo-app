@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
+
 import Header from "../components/Header.jsx"
-import { BACKEND_URL } from "../consts.js"
+import { getTodos } from "../services/todos.services.js"
 
 const Home = () => {
   const login = localStorage.getItem("token") ? true : false
@@ -10,27 +11,10 @@ const Home = () => {
   useEffect(() => {
     if (!localStorage.getItem("token")) return
 
-    async function getTodos() {
-      try {
-        const token = localStorage.getItem("token")
-        const response = await fetch(`${BACKEND_URL}/todos`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if(!response.ok) {
-          throw new Error("Error HTTP: ", response.status)
-        }
-
-        const json = await response.json()
-        setTodos(json.data)
-      } catch (error) {
-        console.error(error.message)
-      }
-    }
-
-    getTodos()
+    ;(async () => {
+      const json = await getTodos()
+      setTodos(json.data)
+    })()
   }, [])
 
   return (

@@ -1,7 +1,11 @@
+import { useState } from "react"
 import { Link } from "wouter"
 
 const Header = () => {
-  const userLogged = localStorage.getItem("token") ? true : false
+  const [userLogged, setUserLogged] = useState(
+    localStorage.getItem("token") ? true : false
+  )
+
   return (
     <header className="p-4 border-b border-b-white w-full flex justify-between items-center">
       <h3>Icon</h3>
@@ -11,6 +15,7 @@ const Header = () => {
           className="py-2 px-4 bg-red-700 rounded font-bold"
           onClick={() => {
             localStorage.removeItem("token")
+            setUserLogged(false)
           }}
         >
           Logout

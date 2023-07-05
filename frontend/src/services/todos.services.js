@@ -51,3 +51,22 @@ export async function createTodo({newTodo}) {
 
   return await response.json()
 }
+
+export async function changeCompleted ({ updatedObject, id }) {
+  const token = getToken()
+
+  const response = await fetch(`${BACKEND_URL}/todos/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(updatedObject)
+  })
+
+  if(!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
+  }
+
+  return await response.json()
+}

@@ -448,7 +448,7 @@
             }
           },
           "400": {
-            "description": "title is missing"
+            "description": "completed is missing"
           },
           "401": {
             "description": "invalid or missing token"

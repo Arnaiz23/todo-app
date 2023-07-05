@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import Header from "../components/Header.jsx"
 import { getTodos } from "../services/todos.services.js"
 import TodoItem from "../components/TodoItem.jsx"
+import FormNewTodo from "../components/FormNewTodo.jsx"
 
 const Home = () => {
   const login = localStorage.getItem("token") ? true : false
@@ -29,13 +30,7 @@ const Home = () => {
       <main className="flex justify-center items-center grow h-auto">
         {login ? (
           <section className="flex flex-col bg-black min-w-[40%] lg:min-w-[25rem]">
-            <input
-              type="text"
-              name="newtodo"
-              id="newtodo"
-              placeholder="Write a new TODO"
-              className="bg-transparent p-3 text-center outline-none text-xl text-slate-400"
-            />
+            <FormNewTodo todos={todos} updateTodos={setTodos} />
             <ul className="overflow-y-scroll max-h-[75vh]">
               {todos.map((todo) => (
                 <TodoItem

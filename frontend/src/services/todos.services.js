@@ -29,6 +29,25 @@ export async function deleteTodo({ id }) {
   })
 
   if (!response.ok) {
-    throw new Error("Error HTTP: ", response.status)
+    throw new Error(`Error HTTP: ${response.status}`)
   }
+}
+
+export async function createTodo({newTodo}) {
+  const token = getToken()
+
+  const response = await fetch(`${BACKEND_URL}/todos`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(newTodo)
+  })
+
+  if(!response.ok) {
+    throw new Error(`Error HTTP:  ${response.status}`)
+  }
+
+  return await response.json()
 }

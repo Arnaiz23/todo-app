@@ -1,35 +1,31 @@
 import { BACKEND_URL } from "../consts"
 
-export async function loginService({login}) {
-  try {
-    const response = await fetch(`${BACKEND_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(login),
-    })
+export async function loginService({ login }) {
+  const response = await fetch(`${BACKEND_URL}/login`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(login),
+  })
 
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`)
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error(error.message)
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
   }
+
+  return await response.json()
 }
 
-export async function registerService ({register}) {
+export async function registerService({ register }) {
   const response = await fetch(`${BACKEND_URL}/register`, {
     method: "POST",
     headers: {
-      "Content-type": "application/json"
+      "Content-type": "application/json",
     },
-    body: JSON.stringify(register)
+    body: JSON.stringify(register),
   })
 
-  if(!response.ok) {
+  if (!response.ok) {
     throw new Error(`Error HTTP: ${response.status}`)
   }
 

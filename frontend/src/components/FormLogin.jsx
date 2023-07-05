@@ -23,10 +23,13 @@ const FormLogin = () => {
 
     if (login.email === "" || login.password === "") return
 
-    const json = await loginService({ login })
-
-    localStorage.setItem("token", json.data)
-    setLocation("/")
+    try {
+      const json = await loginService({ login })
+      localStorage.setItem("token", json.data)
+      setLocation("/")
+    } catch (error) {
+      console.error(error.message)
+    }
   }
 
   return (

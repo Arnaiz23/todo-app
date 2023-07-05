@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "wouter"
 
 const Header = () => {
+  // This userLogged is in the Context for change all the conditions in Home Component
   const [userLogged, setUserLogged] = useState(
     localStorage.getItem("token") ? true : false
   )

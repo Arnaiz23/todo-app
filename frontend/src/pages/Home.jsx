@@ -1,21 +1,37 @@
+import { useEffect, useState } from "react"
 import Header from "../components/Header.jsx"
+import { BACKEND_URL } from "../consts.js"
 
 const Home = () => {
-  const title = "Prueba"
-  const completed = true
   const login = localStorage.getItem("token") ? true : false
-  const response = {
-    data: [
-      {
-        id: 54,
-        title: "Prueba",
-        completed: 0,
-        created_at: "2023-06-24T08:41:12.000Z",
-        updated_at: "2023-06-24T08:41:12.000Z",
-        user_id: 1,
-      },
-    ],
-  }
+
+  const [todos, setTodos] = useState([])
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) return
+
+    async function getTodos() {
+      try {
+        const token = localStorage.getItem("token")
+        const response = await fetch(`${BACKEND_URL}/todos`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        if(!response.ok) {
+          throw new Error("Error HTTP: ", response.status)
+        }
+
+        const json = await response.json()
+        setTodos(json.data)
+      } catch (error) {
+        console.error(error.message)
+      }
+    }
+
+    getTodos()
+  }, [])
 
   return (
     <>
@@ -31,25 +47,25 @@ const Home = () => {
               className="bg-transparent p-3 text-center outline-none text-xl text-slate-400"
             />
             <ul className="overflow-y-scroll max-h-[75vh]">
-              {response.data.map((todo) => (
+              {todos.map((todo) => (
                 <li
-                  key={todo}
+                  key={todo.id}
                   className="flex justify-between items-center p-3 py-5 border-b border-b-white group"
                 >
                   <input
                     type="checkbox"
-                    checked={completed === 0 ? false : true}
+                    checked={todo.completed === 0 ? false : true}
                     onChange={() => {}}
                   />
-                  <p>{title}</p>
+                  <p>{todo.title}</p>
                   <button className="invisible group-hover:visible">X</button>
                 </li>
               ))}
             </ul>
             <footer className="py-2 px-4">
               <p className="text-sm">
-                {response.data.filter((todo) => todo.completed === 0).length}{" "}
-                pending task
+                {todos.filter((todo) => todo.completed === 0).length} pending
+                task
               </p>
             </footer>
           </section>

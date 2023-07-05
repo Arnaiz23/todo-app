@@ -19,3 +19,19 @@ export async function loginService({login}) {
     console.error(error.message)
   }
 }
+
+export async function registerService ({register}) {
+  const response = await fetch(`${BACKEND_URL}/register`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify(register)
+  })
+
+  if(!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
+  }
+
+  return await response.json()
+}

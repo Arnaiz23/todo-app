@@ -1,12 +1,15 @@
 import { useState } from "react"
 import FormContainer from "./FormContainer"
+import { registerService } from "../services/users.services"
+import { useLocation } from "wouter"
 
 const FormRegister = () => {
   const [register, setRegister] = useState({
     email: "",
     password: "",
-    name: ""
+    name: "",
   })
+  const [, setLocation] = useLocation()
 
   const handleChange = (event) => {
     setRegister({
@@ -15,9 +18,16 @@ const FormRegister = () => {
     })
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log(register)
+    try {
+      const json = await registerService({ register })
+      localStorage.setItem("token", json.data)
+      setLocation("/")
+    } catch (error) {
+      // TODO: show the client errors. Maybe with custom Errors.
+      console.error(error.message)
+    }
   }
 
   return (

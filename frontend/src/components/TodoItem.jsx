@@ -1,10 +1,12 @@
 import { deleteTodo } from "../services/todos.services"
 
-const TodoItem = ({ id, completed, title }) => {
+const TodoItem = ({ id, completed, title, todos, updateTodos }) => {
   const handleDelete = async () => {
     try {
       await deleteTodo({ id })
       // TODO: return the new array to the context
+      const todosUpdated = todos.filter((item) => item.id !== id)
+      updateTodos(todosUpdated)
     } catch (error) {
       console.error(error.message)
     }

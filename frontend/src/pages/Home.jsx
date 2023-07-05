@@ -38,6 +38,8 @@ const Home = () => {
                   completed={todo.completed}
                   title={todo.title}
                   id={todo.id}
+                  todos={todos}
+                  updateTodos={setTodos}
                 />
               ))}
             </ul>

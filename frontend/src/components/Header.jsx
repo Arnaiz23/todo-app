@@ -3,7 +3,7 @@ import { Link } from "wouter"
 import { BACKEND_URL } from "../consts"
 
 const Header = () => {
-  // This userLogged is in the Context for change all the conditions in Home Component
+  // TODO: This userLogged is in the Context for change all the conditions in Home Component
   const [userLogged, setUserLogged] = useState(
     localStorage.getItem("token") ? true : false
   )

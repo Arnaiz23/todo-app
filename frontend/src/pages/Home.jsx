@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import Header from "../components/Header.jsx"
 import { getTodos } from "../services/todos.services.js"
+import TodoItem from "../components/TodoItem.jsx"
 
 const Home = () => {
   const login = localStorage.getItem("token") ? true : false
@@ -10,7 +11,6 @@ const Home = () => {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return
-
     ;(async () => {
       const json = await getTodos()
       setTodos(json.data)
@@ -32,18 +32,12 @@ const Home = () => {
             />
             <ul className="overflow-y-scroll max-h-[75vh]">
               {todos.map((todo) => (
-                <li
+                <TodoItem
                   key={todo.id}
-                  className="flex justify-between items-center p-3 py-5 border-b border-b-white group"
-                >
-                  <input
-                    type="checkbox"
-                    checked={todo.completed === 0 ? false : true}
-                    onChange={() => {}}
-                  />
-                  <p>{todo.title}</p>
-                  <button className="invisible group-hover:visible">X</button>
-                </li>
+                  completed={todo.completed}
+                  title={todo.title}
+                  id={todo.id}
+                />
               ))}
             </ul>
             <footer className="py-2 px-4">

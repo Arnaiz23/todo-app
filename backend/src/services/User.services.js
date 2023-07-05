@@ -32,24 +32,25 @@ async function checkUserExists({ con, userId }) {
 }
 
 async function getOneUser({ id }) {
-    const con = await getConnection()
+  const con = await getConnection()
 
-    const [result] = await con.execute("SELECT * FROM users WHERE id LIKE ?", [
-      id,
-    ])
+  const [result] = await con.execute("SELECT * FROM users WHERE id LIKE ?", [
+    id,
+  ])
 
-    if (result.length <= 0)
-      throw new PropertyNotMatch(ERROR_MESSAGES.USER_NOT_EXISTS_ID)
+  if (result.length <= 0)
+    throw new PropertyNotMatch(ERROR_MESSAGES.USER_NOT_EXISTS_ID)
 
-    const user = result[0]
+  const user = result[0]
 
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    }
+  con.release()
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  }
 }
 
 async function createUser({ email, password, name }) {
@@ -63,6 +64,7 @@ async function createUser({ email, password, name }) {
       [email, passwordHashed, name]
     )
 
+    con.release()
     return insertId
   } catch (err) {
     if (err instanceof DatabaseConnectionError) throw err
@@ -86,6 +88,7 @@ async function loginUser({ email, password }) {
     throw new PropertyNotMatch(ERROR_MESSAGES.PASSWORD_NOT_MATCH)
   }
 
+  con.release()
   return { user }
 }
 

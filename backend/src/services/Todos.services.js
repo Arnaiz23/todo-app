@@ -13,6 +13,8 @@ async function getAllTodos({ id }) {
   const [rows] = await con.execute(`SELECT * FROM todos WHERE user_id LIKE ?`, [
     id,
   ])
+
+  con.release()
   return rows
 }
 
@@ -27,6 +29,7 @@ async function newTodo({ title, user }) {
   const newId = result.insertId
   const row = await getTodoWithId({ id: newId, user })
 
+  con.release()
   return row
 }
 
@@ -39,6 +42,7 @@ async function getTodoWithId({ id, user }) {
 
   if (row.length <= 0) throw new Error(ERROR_MESSAGES.TODO_USER_NOT_EXISTS)
 
+  con.release()
   return row[0]
 }
 
@@ -53,6 +57,7 @@ async function deleteTodoWithId({ id, user_id }) {
     throw new Error(ERROR_MESSAGES.TODO_ID_NOT_EXISTS)
   }
 
+  con.release()
   return id
 }
 
@@ -69,6 +74,7 @@ async function updateTitleTodo({ id, title, user }) {
 
   const row = await getTodoWithId({ id, user })
 
+  con.release()
   return row
 }
 
@@ -86,6 +92,7 @@ async function toggleCompletedTodos({ id, completed, user }) {
 
   const row = await getTodoWithId({ id, user })
 
+  con.release()
   return row
 }
 

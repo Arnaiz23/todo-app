@@ -1,13 +1,13 @@
 import { BACKEND_URL } from "../consts"
 import { getToken } from "../libs/functions"
 
-export async function loginService({ login }) {
+export async function loginService({ userInfo }) {
   const response = await fetch(`${BACKEND_URL}/login`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
     },
-    body: JSON.stringify(login),
+    body: JSON.stringify(userInfo),
   })
 
   if (!response.ok) {

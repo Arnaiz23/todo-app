@@ -3,17 +3,20 @@ import { useLocation } from "wouter"
 
 import FormContainer from "./FormContainer.jsx"
 import { loginService } from "../services/users.services"
+import { useStoreWeb } from "../context/store.js"
 
 const FormLogin = () => {
-  const [login, setLogin] = useState({
+  const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
   })
   const [, setLocation] = useLocation()
 
+  const { setLogin } = useStoreWeb()
+
   const handleChange = (event) => {
-    setLogin({
-      ...login,
+    setUserInfo({
+      ...userInfo,
       [event.target.name]: event.target.value,
     })
   }
@@ -21,11 +24,12 @@ const FormLogin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    if (login.email === "" || login.password === "") return
+    if (userInfo.email === "" || userInfo.password === "") return
 
     try {
-      const json = await loginService({ login })
+      const json = await loginService({ userInfo })
       localStorage.setItem("token", json.data)
+      setLogin()
       setLocation("/")
     } catch (error) {
       console.error(error.message)

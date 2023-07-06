@@ -12,8 +12,8 @@ Created with MySQL
 
 Created with React
 
-- [] Completed TODO
-- [] Updated TODO ?
-- [] User delete ???
-- [] User update ???
-- [] Context
+- [x] Completed TODO
+- [ ] Updated TODO ?
+- [ ] User delete ???
+- [ ] User update ???
+- [ ] Context

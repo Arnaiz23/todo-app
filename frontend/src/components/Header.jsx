@@ -2,25 +2,27 @@ import { useEffect, useState } from "react"
 import { Link } from "wouter"
 
 import { getUserData } from "../services/users.services"
+import { useStoreWeb } from "../context/store"
 
 const Header = () => {
   // TODO: This userLogged is in the Context for change all the conditions in Home Component
-  const [userLogged, setUserLogged] = useState(
-    localStorage.getItem("token") ? true : false
-  )
-  const [user, setUser] = useState({})
+  // const [userLogged, setUserLogged] = useState(
+  //   localStorage.getItem("token") ? true : false
+  // )
+
+  const { setUserInfo, userInfo, userLogged, setLogout } = useStoreWeb()
 
   useEffect(() => {
     if (!userLogged) return
     ;(async () => {
       try {
         const json = await getUserData()
-        setUser(json.data)
+        setUserInfo(json.data)
       } catch (error) {
         console.error(error.message)
       }
     })()
-  }, [userLogged])
+  }, [userLogged, setUserInfo])
 
   return (
     <header className="p-4 border-b border-b-white w-full flex justify-between items-center">
@@ -38,14 +40,15 @@ const Header = () => {
       {userLogged ? (
         <>
           <h2 className="text-xl">
-            Welcome <span className="font-bold capitalize">{user.name}</span>
+            Welcome{" "}
+            <span className="font-bold capitalize">{userInfo.name}</span>
           </h2>
           <button
             href="/logout"
             className="py-2 px-4 bg-red-700 rounded font-bold"
             onClick={() => {
               localStorage.removeItem("token")
-              setUserLogged(false)
+              setLogout()
             }}
           >
             Logout

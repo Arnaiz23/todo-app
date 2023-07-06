@@ -4,9 +4,10 @@ import Header from "../components/Header.jsx"
 import { getTodos } from "../services/todos.services.js"
 import TodoItem from "../components/TodoItem.jsx"
 import FormNewTodo from "../components/FormNewTodo.jsx"
+import { useStoreWeb } from "../context/store.js"
 
 const Home = () => {
-  const login = localStorage.getItem("token") ? true : false
+  const { userLogged } = useStoreWeb()
 
   const [todos, setTodos] = useState([])
 
@@ -28,7 +29,7 @@ const Home = () => {
     <>
       <Header />
       <main className="flex justify-center items-center grow h-auto">
-        {login ? (
+        {userLogged ? (
           <section className="flex flex-col bg-black min-w-[40%] lg:min-w-[25rem]">
             <FormNewTodo todos={todos} updateTodos={setTodos} />
             <ul className="overflow-y-scroll max-h-[75vh]">

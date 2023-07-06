@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Link } from "wouter"
 
 import { getUserData } from "../services/users.services"
 import { useStoreWeb } from "../context/store"
 
 const Header = () => {
-  // TODO: This userLogged is in the Context for change all the conditions in Home Component
-  // const [userLogged, setUserLogged] = useState(
-  //   localStorage.getItem("token") ? true : false
-  // )
-
   const { setUserInfo, userInfo, userLogged, setLogout } = useStoreWeb()
 
   useEffect(() => {
@@ -19,6 +14,7 @@ const Header = () => {
         const json = await getUserData()
         setUserInfo(json.data)
       } catch (error) {
+        // TODO: check if the error is a 401 and execute the setLogout
         console.error(error.message)
       }
     })()

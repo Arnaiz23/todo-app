@@ -12,18 +12,17 @@ const Home = () => {
   const { todos, setTodos } = useStoreWeb()
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return
+    if (!userLogged) return
     ;(async () => {
       try {
         const json = await getTodos()
         setTodos(json.data)
       } catch (error) {
-        // TODO: handle the errors
         localStorage.removeItem("token")
         console.error(error.message)
       }
     })()
-  }, [setTodos])
+  }, [setTodos, userLogged])
 
   return (
     <>

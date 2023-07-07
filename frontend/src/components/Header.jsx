@@ -3,6 +3,7 @@ import { Link } from "wouter"
 
 import { getUserData } from "../services/users.services"
 import { useStoreWeb } from "../context/store"
+import { UnauthorizedError } from "../libs/customErrors"
 
 const Header = () => {
   const { setUserInfo, userInfo, userLogged, setLogout } = useStoreWeb()
@@ -14,8 +15,10 @@ const Header = () => {
         const json = await getUserData()
         setUserInfo(json.data)
       } catch (error) {
-        // TODO: check if the error is a 401 and execute the setLogout
-        setLogout()
+        if(error instanceof UnauthorizedError) {
+          setLogout()
+          return
+        }
         console.error(error.message)
       }
     })()

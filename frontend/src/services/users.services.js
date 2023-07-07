@@ -1,4 +1,5 @@
 import { BACKEND_URL } from "../consts"
+import { UnauthorizedError, UserExistsError } from "../libs/customErrors"
 import { getToken } from "../libs/functions"
 
 export async function loginService({ userInfo }) {
@@ -27,7 +28,11 @@ export async function registerService({ register }) {
   })
 
   if (!response.ok) {
-    throw new Error(`Error HTTP: ${response.status}`)
+    const message = `Error HTTP: ${response.status}`
+
+    if(response.status === 409) throw new UserExistsError(message)
+
+    throw new Error(message)
   }
 
   return await response.json()
@@ -43,6 +48,9 @@ export async function getUserData() {
   })
 
   if (!response.ok) {
+    if(response.status === 401) {
+      throw new UnauthorizedError(`Error HTTP: ${response.status}`)
+    }
     throw new Error(`Error HTTP: ${response.status}`)
   }
 

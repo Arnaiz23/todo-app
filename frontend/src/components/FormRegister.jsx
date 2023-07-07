@@ -3,6 +3,7 @@ import FormContainer from "./FormContainer"
 import { registerService } from "../services/users.services"
 import { useLocation } from "wouter"
 import { useStoreWeb } from "../context/store"
+import { UserExistsError } from "../libs/customErrors"
 
 const FormRegister = () => {
   const [register, setRegister] = useState({
@@ -10,6 +11,13 @@ const FormRegister = () => {
     password: "",
     name: "",
   })
+  const [error, setError] = useState({
+    email: false,
+    password: false,
+    name: false,
+  })
+  const [userExists, setUserExists] = useState(false)
+
   const [, setLocation] = useLocation()
 
   const { setLogin } = useStoreWeb()
@@ -23,6 +31,15 @@ const FormRegister = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    if (!register.name || !register.email || !register.password) {
+      setError({
+        name: Boolean(!register.name),
+        email: Boolean(!register.email),
+        password: Boolean(!register.password),
+      })
+      return
+    }
+
     try {
       const json = await registerService({ register })
       localStorage.setItem("token", json.data)
@@ -30,6 +47,10 @@ const FormRegister = () => {
       setLocation("/")
     } catch (error) {
       // TODO: show the client errors. Maybe with custom Errors.
+      if(error instanceof UserExistsError) {
+        setUserExists(true)
+        return
+      }
       console.error(error.message)
     }
   }
@@ -44,9 +65,12 @@ const FormRegister = () => {
           type="text"
           name="name"
           id="name"
-          className="rounded p-1 text-black w-full"
+          className={`rounded p-1 text-black w-full ${
+            error.name ? "border-2 border-red-500" : ""
+          }`}
           onChange={handleChange}
           placeholder="test"
+          required
         />
       </div>
       <div className="flex flex-col justify-start items-start gap-1 w-[90%]">
@@ -57,9 +81,12 @@ const FormRegister = () => {
           type="email"
           name="email"
           id="email"
-          className="rounded p-1 text-black w-full"
+          className={`rounded p-1 text-black w-full ${
+            error.email ? "border-2 border-red-500" : ""
+          }`}
           onChange={handleChange}
           placeholder="test@gmail.com"
+          required
         />
       </div>
       <div className="flex flex-col justify-start items-start gap-1 w-[90%]">
@@ -70,12 +97,16 @@ const FormRegister = () => {
           type="password"
           name="password"
           id="password"
-          className="rounded p-1 text-black w-full"
+          className={`rounded p-1 text-black w-full ${
+            error.password ? "border-2 border-red-500" : ""
+          }`}
           onChange={handleChange}
           placeholder="*********"
           minLength={6}
+          required
         />
       </div>
+      {userExists && <h3 className="text-red-700">This email is not available!!!</h3>}
     </FormContainer>
   )
 }

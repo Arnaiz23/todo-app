@@ -7,7 +7,6 @@ const TodoItem = ({ id, completed, title }) => {
   const handleDelete = async () => {
     try {
       await deleteTodo({ id })
-      // TODO: return the new array to the context
       const todosUpdated = todos.filter((item) => item.id !== id)
       setTodos(todosUpdated)
     } catch (error) {

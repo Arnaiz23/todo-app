@@ -19,7 +19,6 @@ const FormNewTodo = () => {
 
         try {
           const json = await createTodo({ newTodo })
-          // TODO: context
           setTodos([...todos, json.data])
           setTitle("")
         } catch (error) {

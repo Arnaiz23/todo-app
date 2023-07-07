@@ -16,4 +16,5 @@ Created with React
 - [ ] Updated TODO ?
 - [ ] User delete ???
 - [ ] User update ???
-- [ ] Context
+- [x] Context
+    - [x] Todos

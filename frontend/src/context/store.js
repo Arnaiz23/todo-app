@@ -6,4 +6,6 @@ export const useStoreWeb = create((set) => ({
   userLogged: localStorage.getItem("token") ? true : false,
   setLogin: () => set(() => ({ userLogged: true })),
   setLogout: () => set(() => ({ userLogged: false })),
+  todos: [],
+  setTodos: (todos) => set(() => ({ todos }))
 }))

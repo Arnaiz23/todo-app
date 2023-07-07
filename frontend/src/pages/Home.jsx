@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import Header from "../components/Header.jsx"
 import { getTodos } from "../services/todos.services.js"
@@ -9,7 +9,7 @@ import { useStoreWeb } from "../context/store.js"
 const Home = () => {
   const { userLogged } = useStoreWeb()
 
-  const [todos, setTodos] = useState([])
+  const { todos, setTodos } = useStoreWeb()
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return
@@ -23,7 +23,7 @@ const Home = () => {
         console.error(error.message)
       }
     })()
-  }, [])
+  }, [setTodos])
 
   return (
     <>
@@ -31,7 +31,7 @@ const Home = () => {
       <main className="flex justify-center items-center grow h-auto">
         {userLogged ? (
           <section className="flex flex-col bg-black min-w-[40%] lg:min-w-[25rem]">
-            <FormNewTodo todos={todos} updateTodos={setTodos} />
+            <FormNewTodo />
             <ul className="overflow-y-scroll max-h-[75vh]">
               {todos.map((todo) => (
                 <TodoItem
@@ -39,8 +39,6 @@ const Home = () => {
                   completed={todo.completed}
                   title={todo.title}
                   id={todo.id}
-                  todos={todos}
-                  updateTodos={setTodos}
                 />
               ))}
             </ul>

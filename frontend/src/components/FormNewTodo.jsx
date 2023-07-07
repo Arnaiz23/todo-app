@@ -1,8 +1,11 @@
 import { useState } from "react"
 import { createTodo } from "../services/todos.services"
+import { useStoreWeb } from "../context/store"
 
-const FormNewTodo = ({todos, updateTodos}) => {
+const FormNewTodo = () => {
   const [title, setTitle] = useState("")
+
+  const {todos, setTodos} = useStoreWeb()
 
   return (
     <form
@@ -17,7 +20,7 @@ const FormNewTodo = ({todos, updateTodos}) => {
         try {
           const json = await createTodo({ newTodo })
           // TODO: context
-          updateTodos([...todos, json.data])
+          setTodos([...todos, json.data])
           setTitle("")
         } catch (error) {
           console.error(error.message)

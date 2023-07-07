@@ -15,10 +15,11 @@ const Header = () => {
         setUserInfo(json.data)
       } catch (error) {
         // TODO: check if the error is a 401 and execute the setLogout
+        setLogout()
         console.error(error.message)
       }
     })()
-  }, [userLogged, setUserInfo])
+  }, [userLogged, setUserInfo, setLogout])
 
   return (
     <header className="p-4 border-b border-b-white w-full flex justify-between items-center">

@@ -74,6 +74,18 @@
               }
             }
           },
+          "404": {
+            "description": "Email or password incorrect",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "The email or the password doesn't match"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Error with the database connection"
           }

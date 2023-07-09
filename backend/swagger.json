@@ -41,7 +41,8 @@
                   "example": "test@gmail.com"
                 },
                 "password": {
-                  "type": "string"
+                  "type": "string",
+                  "format": "password"
                 }
               }
             }
@@ -115,7 +116,8 @@
                   "example": "test"
                 },
                 "password": {
-                  "type": "string"
+                  "type": "string",
+                  "format": "password"
                 }
               }
             }
@@ -187,8 +189,28 @@
               "type": "object",
               "properties": {
                 "data": {
-                  "type": "string",
-                  "example": "token"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "test"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "test@gmail.com"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
                 }
               }
             }
@@ -225,7 +247,7 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "type": "string"
+                        "type": "number"
                       },
                       "title": {
                         "type": "string"
@@ -234,10 +256,12 @@
                         "type": "boolean"
                       },
                       "created_at": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                       },
                       "updated_at": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                       }
                     }
                   }
@@ -290,7 +314,7 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "string"
+                      "type": "number"
                     },
                     "title": {
                       "type": "string"
@@ -299,10 +323,12 @@
                       "type": "boolean"
                     },
                     "created_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     },
                     "updated_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     }
                   }
                 }
@@ -366,7 +392,7 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "string"
+                      "type": "number"
                     },
                     "title": {
                       "type": "string"
@@ -375,10 +401,12 @@
                       "type": "boolean"
                     },
                     "created_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     },
                     "updated_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     }
                   }
                 }
@@ -440,7 +468,7 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "string"
+                      "type": "number"
                     },
                     "title": {
                       "type": "string"
@@ -449,10 +477,12 @@
                       "type": "boolean"
                     },
                     "created_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     },
                     "updated_at": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "date-time"
                     }
                   }
                 }

@@ -9,8 +9,7 @@ const ERROR_MESSAGES = {
   USER_NOT_EXISTS: "This user doesn't exists",
   USER_NOT_EXISTS_ID: "Doesn't exists any user with this id",
   EMAIL_EXISTS: "This email is already registered!!!",
-  EMAIL_NOT_EXISTS: "This email doesn't exists",
-  PASSWORD_NOT_MATCH: "The passwords doesn't match",
+  EMAIL_PASSWORD_NOT_MATCH: "The email or the password doesn't match"
 }
 
 async function checkUserExists({ con, userId }) {
@@ -80,12 +79,12 @@ async function loginUser({ email, password }) {
 
   const user = rows[0]
 
-  if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_NOT_EXISTS)
+  if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_PASSWORD_NOT_MATCH)
 
   const match = await comparePasswords(password, user.password_hashed)
 
   if (!match) {
-    throw new PropertyNotMatch(ERROR_MESSAGES.PASSWORD_NOT_MATCH)
+    throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_PASSWORD_NOT_MATCH)
   }
 
   con.release()

@@ -1,5 +1,5 @@
 import { BACKEND_URL } from "../consts"
-import { UnauthorizedError, UserExistsError } from "../libs/customErrors"
+import { EmailPasswordNotMatch, UnauthorizedError, UserExistsError } from "../libs/customErrors"
 import { getToken } from "../libs/functions"
 
 export async function loginService({ userInfo }) {
@@ -12,7 +12,11 @@ export async function loginService({ userInfo }) {
   })
 
   if (!response.ok) {
-    throw new Error(`Error HTTP: ${response.status}`)
+    const message = `Error HTTP: ${response.status}`
+    if(response.status === 404) {
+      throw new EmailPasswordNotMatch(message)
+    }
+    throw new Error(message)
   }
 
   return await response.json()

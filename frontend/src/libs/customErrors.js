@@ -13,3 +13,11 @@ export class UserExistsError extends Error {
     this.statusCode = 409
   }
 }
+
+export class EmailPasswordNotMatch extends Error {
+  constructor(message) {
+    super(message)
+    this.name = "EmailPasswordNotMatch"
+    this.statusCode = 404
+  }
+}

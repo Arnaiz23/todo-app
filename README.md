@@ -18,4 +18,4 @@ Created with React
 - [ ] User update ???
 - [x] Context
     - [x] Todos
-- [ ] Create custom errors
+- [x] Create custom errors for the login

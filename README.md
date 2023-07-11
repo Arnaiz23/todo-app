@@ -17,6 +17,10 @@ Basic todo application. I created this app for improve my skills and learn Zusta
 ![Eslint](https://img.shields.io/badge/Eslint-4B32C3?style=for-the-badge&logo=eslint&logoColor=fff)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=000)
 
+If you wanna use it:
+   * `/docs`: Show the API documentation (swagger).
+   * `/api`: Access to the API.
+
 
 ## Frontend
 

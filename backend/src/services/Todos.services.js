@@ -63,15 +63,21 @@ async function deleteTodoWithId({ id, user_id }) {
 }
 
 async function updateTitleTodo({ id, title, user }) {
-  const data = {}
+  try {
+    const todoUpdated = await prisma.todos.update({
+      where: {
+        id: Number(id),
+        user_id: user.id,
+      },
+      data: {
+        title,
+      },
+    })
 
-  if (data.affectedRows === 0) {
+    return todoUpdated
+  } catch (error) {
     throw new Error(ERROR_MESSAGES.SAVE_PROCESS)
   }
-
-  const row = await getTodoWithId({ id, user })
-
-  return row
 }
 
 async function toggleCompletedTodos({ id, completed, user }) {

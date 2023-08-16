@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { getConnection } from "../database.js"
+import { prisma } from "../database.js"
 
 const ERROR_MESSAGES = {
   TODO_USER_NOT_EXISTS: "This user doesn't have any todo with this id",
@@ -9,64 +9,39 @@ const ERROR_MESSAGES = {
 }
 
 async function getAllTodos({ id }) {
-  const con = await getConnection()
-  const [rows] = await con.execute(`SELECT * FROM todos WHERE user_id LIKE ?`, [
-    id,
-  ])
-
-  con.release()
+  const rows = []
   return rows
 }
 
 async function newTodo({ title, user }) {
-  const con = await getConnection()
-
-  const [result] = await con.execute(
-    `INSERT INTO todos (title, user_id) VALUES (?, ?)`,
-    [title, user.id]
-  )
+  const result = {}
 
   const newId = result.insertId
   const row = await getTodoWithId({ id: newId, user })
 
-  con.release()
   return row
 }
 
 async function getTodoWithId({ id, user }) {
-  const con = await getConnection()
-  const [row] = await con.execute(
-    `SELECT * FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
-    [id, user.id]
-  )
+  const row = []
 
   if (row.length <= 0) throw new Error(ERROR_MESSAGES.TODO_USER_NOT_EXISTS)
 
-  con.release()
   return row[0]
 }
 
 async function deleteTodoWithId({ id, user_id }) {
-  const con = await getConnection()
-  const [result] = await con.execute(
-    `DELETE FROM todos WHERE id LIKE ? AND user_id LIKE ?`,
-    [id, user_id]
-  )
+  const result = {}
 
   if (result.affectedRows === 0) {
     throw new Error(ERROR_MESSAGES.TODO_ID_NOT_EXISTS)
   }
 
-  con.release()
   return id
 }
 
 async function updateTitleTodo({ id, title, user }) {
-  const con = await getConnection()
-  const [data] = await con.execute(
-    `UPDATE todos SET title = ? WHERE id LIKE ? AND user_id LIKE ?`,
-    [title, id, user.id]
-  )
+  const data = {}
 
   if (data.affectedRows === 0) {
     throw new Error(ERROR_MESSAGES.SAVE_PROCESS)
@@ -74,17 +49,12 @@ async function updateTitleTodo({ id, title, user }) {
 
   const row = await getTodoWithId({ id, user })
 
-  con.release()
   return row
 }
 
 async function toggleCompletedTodos({ id, completed, user }) {
   const isCompleted = completed ? 1 : 0
-  const con = await getConnection()
-  const [outputs] = await con.execute(
-    `UPDATE todos SET completed = ? WHERE id LIKE ? AND user_id LIKE ?`,
-    [isCompleted, id, user.id]
-  )
+  const outputs = {}
 
   if (outputs.changedRows === 0) {
     throw new Error(ERROR_MESSAGES.COMPLETED_SAME)
@@ -92,7 +62,6 @@ async function toggleCompletedTodos({ id, completed, user }) {
 
   const row = await getTodoWithId({ id, user })
 
-  con.release()
   return row
 }
 

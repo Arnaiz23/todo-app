@@ -1,4 +1,4 @@
-import { getConnection } from "../database.js"
+import { prisma } from "../database.js"
 import { comparePasswords, hashedPassword } from "../libs/globalFunctions.js"
 import {
   DatabaseConnectionError,
@@ -9,40 +9,18 @@ const ERROR_MESSAGES = {
   USER_NOT_EXISTS: "This user doesn't exists",
   USER_NOT_EXISTS_ID: "Doesn't exists any user with this id",
   EMAIL_EXISTS: "This email is already registered!!!",
-  EMAIL_PASSWORD_NOT_MATCH: "The email or the password doesn't match"
-}
-
-async function checkUserExists({ con, userId }) {
-  try {
-    const [user] = await con.execute(
-      `SELECT DISTINCT user_id FROM todos WHERE user_id LIKE ?`,
-      [userId]
-    )
-
-    if (typeof user[0] === "undefined") {
-      throw new Error(ERROR_MESSAGES.USER_NOT_EXISTS)
-    }
-
-    return true
-  } catch (err) {
-    console.log(err.message)
-    return false
-  }
+  EMAIL_PASSWORD_NOT_MATCH: "The email or the password doesn't match",
 }
 
 async function getOneUser({ id }) {
-  const con = await getConnection()
+  const user = prisma.users.findFirst({
+    where: {
+      id,
+    },
+  })
 
-  const [result] = await con.execute("SELECT * FROM users WHERE id LIKE ?", [
-    id,
-  ])
+  console.log(user)
 
-  if (result.length <= 0)
-    throw new PropertyNotMatch(ERROR_MESSAGES.USER_NOT_EXISTS_ID)
-
-  const user = result[0]
-
-  con.release()
   return {
     id: user.id,
     name: user.name,
@@ -54,16 +32,10 @@ async function getOneUser({ id }) {
 
 async function createUser({ email, password, name }) {
   try {
-    const con = await getConnection()
-
     const passwordHashed = await hashedPassword(password)
 
-    const [{ insertId }] = await con.execute(
-      "INSERT INTO users (email, password_hashed, name) VALUES (?,?,?)",
-      [email, passwordHashed, name]
-    )
+    const insertId = ""
 
-    con.release()
     return insertId
   } catch (err) {
     if (err instanceof DatabaseConnectionError) throw err
@@ -72,12 +44,11 @@ async function createUser({ email, password, name }) {
 }
 
 async function loginUser({ email, password }) {
-  const con = await getConnection()
-  const [rows] = await con.execute("SELECT * FROM users WHERE email LIKE ?", [
-    email,
-  ])
-
-  const user = rows[0]
+  const user = await prisma.users.findFirst({
+    where: {
+      email
+    }
+  })
 
   if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_PASSWORD_NOT_MATCH)
 
@@ -87,8 +58,7 @@ async function loginUser({ email, password }) {
     throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_PASSWORD_NOT_MATCH)
   }
 
-  con.release()
   return { user }
 }
 
-export { checkUserExists, getOneUser, createUser, loginUser }
+export { getOneUser, createUser, loginUser }

@@ -81,16 +81,21 @@ async function updateTitleTodo({ id, title, user }) {
 }
 
 async function toggleCompletedTodos({ id, completed, user }) {
-  const isCompleted = completed ? 1 : 0
-  const outputs = {}
+  try {
+    const todoUpdated = await prisma.todos.update({
+      where: {
+        id: Number(id),
+        user_id: user.id,
+      },
+      data: {
+        completed,
+      },
+    })
 
-  if (outputs.changedRows === 0) {
+    return todoUpdated
+  } catch (error) {
     throw new Error(ERROR_MESSAGES.COMPLETED_SAME)
   }
-
-  const row = await getTodoWithId({ id, user })
-
-  return row
 }
 
 export {

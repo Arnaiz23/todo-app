@@ -35,11 +35,16 @@ async function newTodo({ title, user }) {
 }
 
 async function getTodoWithId({ id, user }) {
-  const row = []
+  const todo = await prisma.todos.findFirst({
+    where: {
+      user_id: user.id,
+      id: Number(id),
+    },
+  })
 
-  if (row.length <= 0) throw new Error(ERROR_MESSAGES.TODO_USER_NOT_EXISTS)
+  if (!todo) throw new Error(ERROR_MESSAGES.TODO_USER_NOT_EXISTS)
 
-  return row[0]
+  return todo
 }
 
 async function deleteTodoWithId({ id, user_id }) {

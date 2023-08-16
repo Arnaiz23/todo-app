@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { prisma } from "../database.js"
+import { DatabaseConnectionError } from "../libs/customErrors.js"
 
 const ERROR_MESSAGES = {
   TODO_USER_NOT_EXISTS: "This user doesn't have any todo with this id",
@@ -9,7 +10,7 @@ const ERROR_MESSAGES = {
 }
 
 async function getAllTodos({ id }) {
-  const todos = prisma.todos.findMany({
+  const todos = await prisma.todos.findMany({
     where: {
       user_id: id,
     },
@@ -19,12 +20,18 @@ async function getAllTodos({ id }) {
 }
 
 async function newTodo({ title, user }) {
-  const result = {}
+  try {
+    const newTodo = await prisma.todos.create({
+      data: {
+        title,
+        user_id: user.id,
+      },
+    })
 
-  const newId = result.insertId
-  const row = await getTodoWithId({ id: newId, user })
-
-  return row
+    return newTodo
+  } catch (error) {
+    throw new DatabaseConnectionError(ERROR_MESSAGES.SAVE_PROCESS)
+  }
 }
 
 async function getTodoWithId({ id, user }) {

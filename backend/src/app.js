@@ -2,10 +2,13 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import swaggerUiExpress from "swagger-ui-express"
+import {createRequire} from "node:module"
 
 import { todoRouter } from "./routes/Todos.routes.js"
 import { usersRouter } from "./routes/User.routes.js"
-import swaggerDocument from "../swagger.json" assert { type: "json" }
+
+const requireCustom = createRequire(import.meta.url)
+const swaggerDocument = requireCustom("../swagger.json")
 
 const app = express()
 
@@ -16,7 +19,7 @@ app.use(morgan("dev"))
 app.use(
   "/docs",
   swaggerUiExpress.serve,
-  swaggerUiExpress.setup(swaggerDocument, {customSiteTitle: "Todo-app docs"})
+  swaggerUiExpress.setup(swaggerDocument, { customSiteTitle: "Todo-app docs" })
 )
 app.get("/api/", (_, res) => {
   const routes = [

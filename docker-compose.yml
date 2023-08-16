@@ -1,0 +1,26 @@
+version: "3.0"
+services:
+  db:
+    container_name: todo-app-db
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+  server:
+    build:
+      context: ./backend
+    ports:
+      - 3000:3000
+  # client:
+    # https://www.google.com/search?hl=en&q=docker%2Dcompose%20react%20nginx
+    # image: nginx
+    # ports:
+    #   - 8080:80

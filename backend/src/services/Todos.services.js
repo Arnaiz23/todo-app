@@ -48,13 +48,18 @@ async function getTodoWithId({ id, user }) {
 }
 
 async function deleteTodoWithId({ id, user_id }) {
-  const result = {}
+  try {
+    const todoDelete = await prisma.todos.delete({
+      where: {
+        id: Number(id),
+        user_id,
+      },
+    })
 
-  if (result.affectedRows === 0) {
+    return todoDelete
+  } catch (error) {
     throw new Error(ERROR_MESSAGES.TODO_ID_NOT_EXISTS)
   }
-
-  return id
 }
 
 async function updateTitleTodo({ id, title, user }) {

@@ -9,8 +9,13 @@ const ERROR_MESSAGES = {
 }
 
 async function getAllTodos({ id }) {
-  const rows = []
-  return rows
+  const todos = prisma.todos.findMany({
+    where: {
+      user_id: id,
+    },
+  })
+
+  return todos
 }
 
 async function newTodo({ title, user }) {

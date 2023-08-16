@@ -13,6 +13,7 @@
   "devDependencies": {
     "jest": "^29.5.0",
     "nodemon": "2.0.22",
+    "prisma": "^5.1.1",
     "supertest": "^6.3.3"
   },
   "dependencies": {

@@ -34,9 +34,15 @@ async function createUser({ email, password, name }) {
   try {
     const passwordHashed = await hashedPassword(password)
 
-    const insertId = ""
+    const newUser = await prisma.users.create({
+      data: {
+        name,
+        email,
+        password_hashed: passwordHashed
+      }
+    })
 
-    return insertId
+    return newUser
   } catch (err) {
     if (err instanceof DatabaseConnectionError) throw err
     throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_EXISTS, 409)

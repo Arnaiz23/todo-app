@@ -13,21 +13,17 @@ const ERROR_MESSAGES = {
 }
 
 async function getOneUser({ id }) {
-  const user = prisma.users.findFirst({
+  const user = await prisma.users.findFirst({
     where: {
       id,
     },
   })
 
-  console.log(user)
+  if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.USER_NOT_EXISTS)
 
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    created_at: user.created_at,
-    updated_at: user.updated_at,
-  }
+  delete user.password_hashed
+
+  return user
 }
 
 async function createUser({ email, password, name }) {
@@ -38,8 +34,8 @@ async function createUser({ email, password, name }) {
       data: {
         name,
         email,
-        password_hashed: passwordHashed
-      }
+        password_hashed: passwordHashed,
+      },
     })
 
     return newUser
@@ -52,8 +48,8 @@ async function createUser({ email, password, name }) {
 async function loginUser({ email, password }) {
   const user = await prisma.users.findFirst({
     where: {
-      email
-    }
+      email,
+    },
   })
 
   if (!user) throw new PropertyNotMatch(ERROR_MESSAGES.EMAIL_PASSWORD_NOT_MATCH)
